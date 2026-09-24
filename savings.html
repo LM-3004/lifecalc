@@ -7,7 +7,26 @@
   <meta name="description" content="Use LifeCalc’s savings goal calculator to estimate how long it could take to reach your target and how much to save each week.">
   <link rel="canonical" href="https://lm-3004.github.io/lifecalc/savings.html">
   <link rel="stylesheet" href="styles.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Goal Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/savings.html","description":"Estimate how long it could take to reach a savings goal based on current savings and regular contributions."}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Goal Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/savings.html"}</script>
+  <style>
+    /* Keep controls aligned consistently across browsers and on small screens. */
+    #savings-form input,
+    #savings-form select {
+      box-sizing: border-box;
+      min-height: 48px;
+      line-height: 1.25;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    #savings-form input[type="number"],
+    #savings-form input[type="date"],
+    #savings-form select { font-size: 16px; }
+    #savings-form .input-prefix { display: flex; align-items: stretch; }
+    #savings-form .input-prefix input { flex: 1; min-width: 0; }
+    @media (max-width: 600px) {
+      #savings-form input, #savings-form select { min-height: 50px; font-size: 16px; }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header"><div class="container nav-wrap">
@@ -26,20 +45,92 @@
     <section class="container calculator-layout">
       <form id="savings-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your savings goal</h2><div class="form-grid">
-          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" name="currentSavings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" required aria-describedby="current-savings-help"></div><p id="current-savings-help" class="form-help">Enter zero if you are starting from scratch.</p></div>
-          <div class="field"><label for="savings-goal">Savings goal</label><div class="input-prefix"><span>$</span><input id="savings-goal" name="savingsGoal" type="number" min="0.01" max="1000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="regular-saving">Amount you can save</label><div class="input-prefix"><span>$</span><input id="regular-saving" name="regularSaving" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" required aria-describedby="regular-saving-help"></div><p id="regular-saving-help" class="form-help">Enter the amount you save at the selected frequency.</p></div>
+          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" name="currentSavings" type="number" min="0" max="100000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="savings-goal">Savings goal</label><div class="input-prefix"><span>$</span><input id="savings-goal" name="savingsGoal" type="number" min="0.01" max="100000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="regular-saving">Amount you can save</label><div class="input-prefix"><span>$</span><input id="regular-saving" name="regularSaving" type="number" min="0" max="100000000" step="0.01" inputmode="decimal" required></div></div>
           <div class="field"><label for="saving-frequency">Savings frequency</label><select id="saving-frequency" name="frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option></select></div>
-          <div class="field"><label for="target-date">Target date <span class="muted">(optional)</span></label><input id="target-date" name="targetDate" type="date" aria-describedby="target-date-help"><p id="target-date-help" class="form-help">Leave blank if you do not have a target date.</p></div>
+          <div class="field"><label for="target-date">Target date <span class="muted">(optional)</span></label><input id="target-date" name="targetDate" type="date" aria-describedby="target-date-help"><small id="target-date-help" class="muted">Leave blank to estimate a completion date.</small></div>
         </div></div>
         <p id="savings-form-error" class="form-error" role="alert" hidden></p>
         <button class="button button-primary" type="submit">Calculate savings goal <span aria-hidden="true">→</span></button>
       </form>
-      <section id="savings-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your savings details to see an estimated timeline and completion date.</p></div></section>
+      <section id="savings-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your savings details to see your estimate.</p></div></section>
     </section>
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>This savings target calculator converts your regular contribution into a weekly rate and compares it with the amount still needed. You can also enter a target date to see the weekly amount that would be required.</p></section>
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>This savings target calculator converts your regular contribution into a weekly rate, then estimates the time needed to reach your goal.</p></section>
   </main>
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; disclaimer</a></nav></div></footer>
-  <script src="script.js"></script><script src="savings.js"></script>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('savings-form');
+      var error = document.getElementById('savings-form-error');
+      var results = document.getElementById('savings-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 2 });
+      var number = new Intl.NumberFormat('en-AU', { maximumFractionDigits: 2 });
+
+      function dollars(value) { return money.format(value); }
+      function clean(value) { return Number.isFinite(value) && value >= 0 ? value : 0; }
+      function formatDuration(weeks) {
+        if (weeks < 1) return number.format(weeks * 7) + ' days';
+        return number.format(weeks) + (weeks === 1 ? ' week' : ' weeks');
+      }
+      function dateFromDays(days) {
+        var date = new Date();
+        date.setHours(12, 0, 0, 0);
+        date.setDate(date.getDate() + Math.ceil(days));
+        return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
+      }
+      function renderReached(remaining) {
+        error.hidden = true;
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Goal already reached.</h2><p>You have ' + dollars(Math.abs(remaining)) + ' available toward this goal.</p></div>';
+      }
+      function calculate(event) {
+        event.preventDefault();
+        error.hidden = true;
+        var current = Number(document.getElementById('current-savings').value);
+        var goal = Number(document.getElementById('savings-goal').value);
+        var amount = Number(document.getElementById('regular-saving').value);
+        var frequency = document.getElementById('saving-frequency').value;
+        var targetValue = document.getElementById('target-date').value;
+
+        if (document.getElementById('current-savings').value === '' || !Number.isFinite(current) || current < 0) return showError('Enter current savings of $0 or more.');
+        if (document.getElementById('savings-goal').value === '' || !Number.isFinite(goal) || goal <= 0) return showError('Enter a savings goal greater than $0.');
+        if (document.getElementById('regular-saving').value === '' || !Number.isFinite(amount) || amount < 0) return showError('Enter a savings amount of $0 or more.');
+        var remaining = goal - current;
+        if (remaining <= 0) return renderReached(remaining);
+        if (amount <= 0) return showError('Enter a savings amount greater than $0 to reach this goal.');
+
+        var weekly = frequency === 'fortnightly' ? amount / 2 : frequency === 'monthly' ? amount * 12 / 52 : amount;
+        if (!Number.isFinite(weekly) || weekly <= 0) return showError('Enter a savings amount greater than $0.');
+        var weeks = remaining / weekly;
+        var days = weeks * 7;
+        var targetMessage = '';
+        if (targetValue) {
+          var target = new Date(targetValue + 'T12:00:00');
+          var today = new Date();
+          today.setHours(0, 0, 0, 0);
+          var targetDays = Math.ceil((target - today) / 86400000);
+          if (!Number.isFinite(targetDays) || targetDays <= 0) return showError('Choose a target date in the future.');
+          var targetWeeks = targetDays / 7;
+          var requiredWeekly = remaining / targetWeeks;
+          if (!Number.isFinite(requiredWeekly) || requiredWeekly <= 0) return showError('The target date is not valid for this goal.');
+          targetMessage = '<div class="result-highlight"><strong>Required weekly savings for target date</strong><span>' + dollars(requiredWeekly) + '/week</span></div>';
+        }
+        var scenarios = [25, 50, 100, 200].map(function (extra) {
+          var scenarioWeekly = weekly + extra;
+          var scenarioWeeks = remaining / scenarioWeekly;
+          return '<li><span>+$' + extra + '/week</span><strong>' + dollars(scenarioWeekly) + '/week · ' + formatDuration(scenarioWeeks) + '</strong></li>';
+        }).join('');
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(remaining) + ' still needed</h2><div class="result-grid"><div><span>Weekly savings</span><strong>' + dollars(weekly) + '</strong></div><div><span>Estimated time</span><strong>' + formatDuration(weeks) + '</strong></div><div><span>Estimated completion</span><strong>' + dateFromDays(days) + '</strong></div></div>' + targetMessage + '<h3>Alternative scenarios</h3><ul class="scenario-list">' + scenarios + '</ul></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
 </body>
 </html>

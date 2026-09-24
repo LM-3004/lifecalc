@@ -36,14 +36,14 @@ function renderResults(data) {
   const scenarioRows = [25, 50, 100, 200].map(extra => {
     const weeks = weeksFor(data.gap, data.weeklySurplus + extra);
     const text = weeks === null ? 'No positive surplus' : weeks === 0 ? 'Already covered' : `${weeks} week${weeks === 1 ? '' : 's'}`;
-    return `<div class="scenario-row"><span>Save an extra ${money(extra)} / week</span><strong>${text}</strong></div>`;
+    return `<div class="scenario-row"><span>Save ${money(extra)} more per week</span><strong>${text}</strong></div>`;
   }).join('');
 
   results.innerHTML = `<div class="result-status ${statusClass}"><span class="result-icon">${data.canAfford ? '✓' : '!'}</span><div><p class="eyebrow">Your estimate</p><h2>${statusTitle}</h2><p>${gapText}</p></div></div>
-    <div class="metric-grid"><div class="metric"><span>Current savings</span><strong>${money(data.savings)}</strong></div><div class="metric"><span>After purchase</span><strong>${money(data.afterPurchase)}</strong></div><div class="metric"><span>Weekly surplus</span><strong>${money(data.weeklySurplus)}</strong></div><div class="metric"><span>Desired buffer</span><strong>${money(data.buffer)}</strong></div></div>
-    <div class="timeline"><h3>Saving timeline</h3><p>${baseTimeline}</p><p class="muted">${data.gap > 0 ? `Your target is ${money(data.purchase + data.buffer)} in total savings.` : 'No additional saving is needed for the entered target.'}</p></div>
-    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Weekly surplus + optional saving: <strong>${money(data.weeklySurplus)}</strong></li><li>Current savings − purchase price: <strong>${money(data.afterPurchase)}</strong></li></ul></div>
-    <div class="scenarios"><h3>What if you save a little extra?</h3><p class="muted">These scenarios add to the weekly surplus above.</p>${scenarioRows}</div>
+    <div class="metric-grid"><div class="metric"><span>Current savings</span><strong>${money(data.savings)}</strong></div><div class="metric"><span>After purchase</span><strong>${money(data.afterPurchase)}</strong></div><div class="metric"><span>Weekly surplus</span><strong>${money(data.weeklySurplus)}</strong></div></div>
+    <div class="timeline"><h3>Saving timeline</h3><p>${baseTimeline}</p><p class="muted">${data.gap > 0 ? `Your target is ${money(data.purchase + data.buffer)} in total savings.` : 'No additional saving is needed to meet your target.'}</p></div>
+    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Weekly surplus: <strong>${money(data.weeklySurplus)}</strong></li></ul></div>
+    <div class="scenarios"><h3>What if you save more each week?</h3><p class="muted">These are separate scenarios — choose the amount you could realistically save. Each option shows how many weeks of saving that amount would take to reach your goal.</p>${scenarioRows}</div>
     <p class="result-note">This is an estimate, not financial advice. It only reflects the information entered and does not guarantee affordability.</p>`;
 }
 

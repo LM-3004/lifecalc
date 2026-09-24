@@ -21,19 +21,22 @@ function weeklyAmount(form, name, frequencyName) {
   return amount * (frequencyToWeekly[frequency] || 0);
 }
 
-function weeksFor(target, weeklyRate) {
-  if (target <= 0) return 0;
-  if (!(weeklyRate > 0) || !Number.isFinite(weeklyRate)) return null;
-  const weeks = target / weeklyRate;
+function weeksFor(amountStillNeeded, weeklySavingAmount) {
+  if (amountStillNeeded <= 0) return 0;
+  if (!(weeklySavingAmount > 0) || !Number.isFinite(weeklySavingAmount)) return null;
+
+  const weeks = amountStillNeeded / weeklySavingAmount;
   return Number.isFinite(weeks) && weeks >= 0 ? weeks : null;
 }
 
 function roundedNumber(value) {
-  return Number(value.toFixed(2));
+  return Number(value.toFixed(1));
 }
 
 function formatTime(weeks) {
-  if (weeks === null) return 'Not currently reachable';
+  if (weeks === null || !Number.isFinite(weeks) || weeks < 0) {
+    return 'Not currently reachable';
+  }
   if (weeks === 0) return 'Already covered';
 
   if (weeks < 1) {
@@ -53,7 +56,7 @@ function renderResults(data) {
     ? `You would need to save ${money(data.amountStillNeeded)} more to reach the purchase price and buffer.`
     : 'The purchase price and your buffer are covered by your current savings.';
   const baseTimeline = data.estimatedWeeks === null
-    ? 'Not currently reachable — you have no positive weekly surplus available for this target.'
+    ? 'Not currently reachable — you have no positive weekly saving available for this target.'
     : data.estimatedWeeks === 0
       ? 'You already meet the savings target.'
       : `Estimated time: <strong>${formatTime(data.estimatedWeeks)}</strong>`;
@@ -81,8 +84,12 @@ function setupCalculator() {
     const values = Object.fromEntries(names.map(name => [name, readAmount(form, name)]));
     const weeklyExpenses = ['housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other']
       .reduce((sum, name) => sum + (weeklyAmount(form, name, `${name}Frequency`) ?? NaN), 0);
-    const weeklyIncome = values.income === null ? null : values.income * (frequencyToWeekly[form.elements.incomeFrequency.value] || 0);
-    const invalid = Object.values(values).some(value => value === null) || !Number.isFinite(weeklyExpenses) || !Number.isFinite(weeklyIncome);
+    const weeklyIncome = values.income === null
+      ? null
+      : values.income * (frequencyToWeekly[form.elements.incomeFrequency.value] || 0);
+    const invalid = Object.values(values).some(value => value === null)
+      || !Number.isFinite(weeklyExpenses)
+      || !Number.isFinite(weeklyIncome);
     if (invalid) { error.hidden = false; return; }
     error.hidden = true;
 
@@ -91,7 +98,7 @@ function setupCalculator() {
     const targetSavings = values.purchase + values.buffer;
     const amountStillNeeded = Math.max(0, targetSavings - values.savings);
     const afterPurchase = values.savings - values.purchase;
-    const estimatedWeeks = weeksFor(amountStillNeeded, normalWeeklySurplus);
+    const estimatedWeeks = weeksFor(amountStillNeeded, projectedWeeklySaving);
 
     renderResults({
       savings: values.savings,

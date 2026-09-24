@@ -1,1 +1,45 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Savings Goal Calculator | LifeCalc</title>
+  <meta name="description" content="Use LifeCalc’s savings goal calculator to estimate how long it could take to reach your target and how much to save each week.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/savings.html">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Goal Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/savings.html","description":"Estimate how long it could take to reach a savings goal based on current savings and regular contributions."}</script>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="savings.html" aria-current="page">Savings Goal</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Savings calculator</p>
+      <h1>Savings Goal Calculator</h1>
+      <p>Use this calculator to estimate how long it could take to reach a savings goal based on your current savings and how much you can save regularly.</p>
+    </section>
+    <section class="container calculator-layout">
+      <form id="savings-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your savings goal</h2><div class="form-grid">
+          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" name="currentSavings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" required aria-describedby="current-savings-help"></div><p id="current-savings-help" class="form-help">Enter zero if you are starting from scratch.</p></div>
+          <div class="field"><label for="savings-goal">Savings goal</label><div class="input-prefix"><span>$</span><input id="savings-goal" name="savingsGoal" type="number" min="0.01" max="1000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="regular-saving">Amount you can save</label><div class="input-prefix"><span>$</span><input id="regular-saving" name="regularSaving" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" required aria-describedby="regular-saving-help"></div><p id="regular-saving-help" class="form-help">Enter the amount you save at the selected frequency.</p></div>
+          <div class="field"><label for="saving-frequency">Savings frequency</label><select id="saving-frequency" name="frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option></select></div>
+          <div class="field"><label for="target-date">Target date <span class="muted">(optional)</span></label><input id="target-date" name="targetDate" type="date" aria-describedby="target-date-help"><p id="target-date-help" class="form-help">Leave blank if you do not have a target date.</p></div>
+        </div></div>
+        <p id="savings-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate savings goal <span aria-hidden="true">→</span></button>
+      </form>
+      <section id="savings-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your savings details to see an estimated timeline and completion date.</p></div></section>
+    </section>
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>This savings target calculator converts your regular contribution into a weekly rate and compares it with the amount still needed. You can also enter a target date to see the weekly amount that would be required.</p></section>
+  </main>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; disclaimer</a></nav></div></footer>
+  <script src="script.js"></script><script src="savings.js"></script>
+</body>
+</html>

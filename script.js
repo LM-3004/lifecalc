@@ -24,26 +24,50 @@ function weeklyAmount(form, name, frequencyName) {
 function weeksFor(target, weeklyRate) {
   if (target <= 0) return 0;
   if (!(weeklyRate > 0) || !Number.isFinite(weeklyRate)) return null;
-  return Math.ceil(target / weeklyRate);
+  const weeks = target / weeklyRate;
+  return Number.isFinite(weeks) && weeks >= 0 ? weeks : null;
+}
+
+function roundedNumber(value) {
+  return Number(value.toFixed(2));
+}
+
+function formatTime(weeks) {
+  if (weeks === null) return 'Not currently reachable';
+  if (weeks === 0) return 'Already covered';
+
+  if (weeks < 1) {
+    const days = roundedNumber(weeks * 7);
+    return `${days} day${days === 1 ? '' : 's'}`;
+  }
+
+  const roundedWeeks = roundedNumber(weeks);
+  return `${roundedWeeks} week${roundedWeeks === 1 ? '' : 's'}`;
 }
 
 function renderResults(data) {
   const results = document.getElementById('results');
   const statusClass = data.canAfford ? 'result-good' : 'result-caution';
   const statusTitle = data.canAfford ? 'This purchase stays above your buffer' : 'This purchase would dip below your buffer';
-  const gapText = data.gap > 0 ? `You would need to save ${money(data.gap)} more to reach the purchase price and buffer.` : 'The purchase price and your buffer are covered by your current savings.';
-  const baseTimeline = data.weeks === null ? 'A timeline cannot be estimated from the weekly surplus entered.' : data.weeks === 0 ? 'You already meet the savings target.' : `Estimated time: <strong>${data.weeks} week${data.weeks === 1 ? '' : 's'}</strong>`;
-  const scenarioRows = [25, 50, 100, 200].map(extra => {
-    const weeks = weeksFor(data.gap, data.weeklySurplus + extra);
-    const text = weeks === null ? 'No positive surplus' : weeks === 0 ? 'Already covered' : `${weeks} week${weeks === 1 ? '' : 's'}`;
-    return `<div class="scenario-row"><span>Save ${money(extra)} more per week</span><strong>${text}</strong></div>`;
+  const gapText = data.amountStillNeeded > 0
+    ? `You would need to save ${money(data.amountStillNeeded)} more to reach the purchase price and buffer.`
+    : 'The purchase price and your buffer are covered by your current savings.';
+  const baseTimeline = data.estimatedWeeks === null
+    ? 'Not currently reachable — you have no positive weekly surplus available for this target.'
+    : data.estimatedWeeks === 0
+      ? 'You already meet the savings target.'
+      : `Estimated time: <strong>${formatTime(data.estimatedWeeks)}</strong>`;
+  const scenarioRows = [25, 50, 100, 200].map(extraWeeklySaving => {
+    const scenarioWeeklySaving = data.normalWeeklySurplus + extraWeeklySaving;
+    const estimatedWeeks = weeksFor(data.amountStillNeeded, scenarioWeeklySaving);
+    return `<div class="scenario-row"><span>Save ${money(extraWeeklySaving)} more per week</span><strong>${formatTime(estimatedWeeks)}</strong></div>`;
   }).join('');
 
   results.innerHTML = `<div class="result-status ${statusClass}"><span class="result-icon">${data.canAfford ? '✓' : '!'}</span><div><p class="eyebrow">Your estimate</p><h2>${statusTitle}</h2><p>${gapText}</p></div></div>
-    <div class="metric-grid"><div class="metric"><span>Current savings</span><strong>${money(data.savings)}</strong></div><div class="metric"><span>After purchase</span><strong>${money(data.afterPurchase)}</strong></div><div class="metric"><span>Weekly surplus</span><strong>${money(data.weeklySurplus)}</strong></div></div>
-    <div class="timeline"><h3>Saving timeline</h3><p>${baseTimeline}</p><p class="muted">${data.gap > 0 ? `Your target is ${money(data.purchase + data.buffer)} in total savings.` : 'No additional saving is needed to meet your target.'}</p></div>
-    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Weekly surplus: <strong>${money(data.weeklySurplus)}</strong></li></ul></div>
-    <div class="scenarios"><h3>What if you save more each week?</h3><p class="muted">These are separate scenarios — choose the amount you could realistically save. Each option shows how many weeks of saving that amount would take to reach your goal.</p>${scenarioRows}</div>
+    <div class="metric-grid"><div class="metric"><span>Current savings</span><strong>${money(data.savings)}</strong></div><div class="metric"><span>After purchase</span><strong>${money(data.afterPurchase)}</strong></div><div class="metric"><span>Weekly surplus</span><strong>${money(data.normalWeeklySurplus)}</strong></div></div>
+    <div class="timeline"><h3>Saving timeline</h3><p>${baseTimeline}</p><p class="muted">${data.amountStillNeeded > 0 ? `Your target is ${money(data.targetSavings)} in total savings.` : 'No additional saving is needed to meet your target.'}</p></div>
+    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Normal weekly surplus: <strong>${money(data.normalWeeklySurplus)}</strong></li><li>Projected weekly saving with your additional saving: <strong>${money(data.projectedWeeklySaving)}</strong></li></ul></div>
+    <div class="scenarios"><h3>What if you save more each week?</h3><p class="muted">These are separate scenarios — choose the amount you could realistically save. Each option adds only that amount to your normal weekly surplus.</p>${scenarioRows}</div>
     <p class="result-note">This is an estimate, not financial advice. It only reflects the information entered and does not guarantee affordability.</p>`;
 }
 
@@ -55,15 +79,34 @@ function setupCalculator() {
     const error = document.getElementById('form-error');
     const names = ['income', 'savings', 'housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other', 'purchase', 'buffer', 'extra'];
     const values = Object.fromEntries(names.map(name => [name, readAmount(form, name)]));
-    const weeklyExpenses = ['housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other'].reduce((sum, name) => sum + (weeklyAmount(form, name, `${name}Frequency`) ?? NaN), 0);
+    const weeklyExpenses = ['housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other']
+      .reduce((sum, name) => sum + (weeklyAmount(form, name, `${name}Frequency`) ?? NaN), 0);
     const weeklyIncome = values.income === null ? null : values.income * (frequencyToWeekly[form.elements.incomeFrequency.value] || 0);
     const invalid = Object.values(values).some(value => value === null) || !Number.isFinite(weeklyExpenses) || !Number.isFinite(weeklyIncome);
     if (invalid) { error.hidden = false; return; }
     error.hidden = true;
-    const weeklySurplus = weeklyIncome - weeklyExpenses + values.extra;
+
+    const normalWeeklySurplus = weeklyIncome - weeklyExpenses;
+    const projectedWeeklySaving = normalWeeklySurplus + values.extra;
+    const targetSavings = values.purchase + values.buffer;
+    const amountStillNeeded = Math.max(0, targetSavings - values.savings);
     const afterPurchase = values.savings - values.purchase;
-    const gap = Math.max(0, values.purchase + values.buffer - values.savings);
-    renderResults({ savings: values.savings, purchase: values.purchase, buffer: values.buffer, afterPurchase, gap, weeklyIncome, weeklyExpenses, weeklySurplus, canAfford: afterPurchase >= values.buffer, weeks: weeksFor(gap, weeklySurplus) });
+    const estimatedWeeks = weeksFor(amountStillNeeded, normalWeeklySurplus);
+
+    renderResults({
+      savings: values.savings,
+      purchase: values.purchase,
+      buffer: values.buffer,
+      afterPurchase,
+      targetSavings,
+      amountStillNeeded,
+      weeklyIncome,
+      weeklyExpenses,
+      normalWeeklySurplus,
+      projectedWeeklySaving,
+      estimatedWeeks,
+      canAfford: afterPurchase >= values.buffer
+    });
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }

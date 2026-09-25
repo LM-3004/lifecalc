@@ -1,1 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hourly Wage to Salary Calculator | LifeCalc</title>
+  <meta name="description" content="Use this hourly wage to salary calculator to estimate weekly, fortnightly, monthly and annual gross income from your hourly pay.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/salary.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Local layout refinements keep this page aligned without changing the shared stylesheet. */
+    *, *::before, *::after { box-sizing: border-box; }
+    #salary-form input { box-sizing: border-box; width: 100%; min-height: 48px; font-size: 16px; }
+    #salary-form .input-prefix { display: flex; align-items: stretch; }
+    #salary-form .input-prefix input { flex: 1; min-width: 0; }
+    #salary-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 0.75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--soft, #e8f4ef); color: var(--muted, #60706a); }
+    #salary-form .input-prefix input { border-radius: 0 10px 10px 0; }
+    .salary-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .salary-results .result-highlight { margin-top: 1rem; }
+    .salary-results .result-grid strong { display: block; margin-top: 0.3rem; }
+    .salary-results .examples-list { list-style: none; margin: 0; padding: 0; }
+    .salary-results .examples-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid var(--line, #dce6e1); }
+    .salary-results .examples-list li:last-child { border-bottom: 0; }
+    .salary-results .examples-list strong { text-align: right; }
+    .salary-help { margin: 0.4rem 0 0; color: var(--muted, #60706a); font-size: 0.92rem; }
+    @media (max-width: 600px) {
+      #salary-form input { min-height: 50px; font-size: 16px; }
+      .salary-results .result-grid { grid-template-columns: 1fr; }
+      .salary-results .examples-list li { align-items: flex-start; flex-direction: column; gap: 0.25rem; }
+      .salary-results .examples-list strong { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="salary.html" aria-current="page">Hourly to Salary</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Income calculator</p>
+      <h1>Hourly Wage to Salary Calculator</h1>
+      <p>Use this hourly to salary calculator to turn your hourly pay into a clear gross income estimate. See how much you could make a year, including regular hours, overtime and additional income.</p>
+    </section>
+
+    <section class="container calculator-layout">
+      <form id="salary-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your work and income</h2><div class="form-grid">
+          <div class="field"><label for="hourly-wage">Hourly wage</label><div class="input-prefix"><span>$</span><input id="hourly-wage" name="hourlyWage" type="number" min="0.01" step="0.01" inputmode="decimal" value="30" aria-describedby="hourly-wage-help"></div><p class="salary-help" id="hourly-wage-help">Your standard hourly rate.</p></div>
+          <div class="field"><label for="regular-hours">Hours worked per week</label><input id="regular-hours" name="regularHours" type="number" min="0.01" max="168" step="0.01" inputmode="decimal" value="38"></div>
+          <div class="field"><label for="weeks-worked">Weeks worked per year</label><input id="weeks-worked" name="weeksWorked" type="number" min="0.01" max="52" step="0.01" inputmode="decimal" value="52"></div>
+          <div class="field"><label for="overtime-hours">Overtime hours per week</label><input id="overtime-hours" name="overtimeHours" type="number" min="0" step="0.01" inputmode="decimal" value="2"></div>
+          <div class="field"><label for="overtime-multiplier">Overtime multiplier</label><input id="overtime-multiplier" name="overtimeMultiplier" type="number" min="0.01" step="0.01" inputmode="decimal" value="1.5"><p class="salary-help">For example, 1.5 means time-and-a-half.</p></div>
+          <div class="field"><label for="additional-income">Additional annual income <span class="muted">(optional)</span></label><div class="input-prefix"><span>$</span><input id="additional-income" name="additionalIncome" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div></div>
+        </div></div>
+        <p id="salary-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate salary <span aria-hidden="true">→</span></button>
+      </form>
+
+      <section id="salary-results" class="results-card salary-results" aria-live="polite" aria-atomic="true">
+        <div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your details to see your hourly pay converted into gross income.</p></div>
+      </section>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A straightforward hourly pay calculator</h2><p>Your regular weekly pay is your hourly wage multiplied by regular hours. Overtime pay uses your hourly wage, overtime hours and multiplier. Those weekly amounts are annualised using the weeks you work each year.</p></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('salary-form');
+      var error = document.getElementById('salary-form-error');
+      var results = document.getElementById('salary-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      function dollars(value) { return Number.isFinite(value) ? money.format(value) : '$0.00'; }
+      function inputValue(id) { var input = document.getElementById(id); return input.value.trim() === '' ? NaN : Number(input.value); }
+      function valid(value) { return Number.isFinite(value); }
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
+      }
+      function calculate(event) {
+        event.preventDefault();
+        var wage = inputValue('hourly-wage');
+        var regularHours = inputValue('regular-hours');
+        var weeks = inputValue('weeks-worked');
+        var overtimeHours = inputValue('overtime-hours');
+        var multiplier = inputValue('overtime-multiplier');
+        var additional = inputValue('additional-income');
+        if (!valid(wage) || wage <= 0) return showError('Enter an hourly wage greater than $0.');
+        if (!valid(regularHours) || regularHours <= 0 || regularHours > 168) return showError('Regular hours per week must be greater than 0 and no more than 168.');
+        if (!valid(overtimeHours) || overtimeHours < 0) return showError('Overtime hours cannot be negative.');
+        if (regularHours + overtimeHours > 168) return showError('Regular hours plus overtime hours cannot exceed 168 hours per week.');
+        if (!valid(weeks) || weeks <= 0 || weeks > 52) return showError('Weeks worked per year must be greater than 0 and no more than 52.');
+        if (!valid(multiplier) || multiplier <= 0) return showError('Overtime multiplier must be greater than 0.');
+        if (!valid(additional) || additional < 0) return showError('Additional annual income cannot be negative.');
+        var regularWeekly = wage * regularHours;
+        var overtimeWeekly = wage * overtimeHours * multiplier;
+        var weekly = regularWeekly + overtimeWeekly;
+        var annualRegular = regularWeekly * weeks;
+        var annualOvertime = overtimeWeekly * weeks;
+        var annual = annualRegular + annualOvertime + additional;
+        var values = [regularWeekly, overtimeWeekly, weekly, annualRegular, annualOvertime, annual];
+        if (values.some(function (value) { return !Number.isFinite(value); })) return showError('Please enter values that produce a valid estimate.');
+        var scenarioWages = [{ label: '$2 lower', wage: wage - 2 }, { label: '$2 higher', wage: wage + 2 }, { label: '$5 higher', wage: wage + 5 }];
+        var scenarios = scenarioWages.map(function (scenario) {
+          var scenarioAnnual = ((scenario.wage * regularHours) + (scenario.wage * overtimeHours * multiplier)) * weeks + additional;
+          return '<li><span>' + scenario.label + ' (' + dollars(scenario.wage) + '/hour)</span><strong>' + dollars(scenarioAnnual) + ' per year</strong></li>';
+        }).join('');
+        error.hidden = true;
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(annual) + ' annual gross income</h2><div class="result-grid"><div><span>Weekly gross income</span><strong>' + dollars(weekly) + '</strong></div><div><span>Fortnightly gross income</span><strong>' + dollars(annual / 26) + '</strong></div><div><span>Monthly gross income</span><strong>' + dollars(annual / 12) + '</strong></div><div><span>Annual gross income</span><strong>' + dollars(annual) + '</strong></div><div><span>Annual regular pay</span><strong>' + dollars(annualRegular) + '</strong></div><div><span>Annual overtime pay</span><strong>' + dollars(annualOvertime) + '</strong></div><div><span>Additional annual income</span><strong>' + dollars(additional) + '</strong></div><div><span>Daily equivalent</span><strong>' + dollars(annual / 260) + '</strong></div></div><div class="result-highlight"><strong>Examples</strong><ul class="examples-list">' + scenarios + '</ul></div><p class="result-note">These are gross income estimates before tax and other deductions. Actual take-home pay may differ. Estimates are based on the information you enter and are for general informational purposes only.</p></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

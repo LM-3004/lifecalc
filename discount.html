@@ -1,1 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discount Calculator | LifeCalc</title>
+  <meta name="description" content="Use this discount calculator to estimate sale prices, total savings, and the final price including tax for your purchase.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/discount.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    .discount-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+    .discount-card, .discount-results { padding: clamp(1.25rem, 3vw, 2rem); background: var(--card, #fff); border: 1px solid var(--line, #dce6e1); border-radius: 18px; box-shadow: 0 10px 26px rgba(23, 37, 31, .06); }
+    .discount-card h2, .discount-results h2 { margin-top: 0; }
+    .discount-help { margin: 0 0 1.25rem; color: var(--muted, #60706a); line-height: 1.55; }
+    .discount-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .discount-field { display: flex; flex-direction: column; gap: .4rem; }
+    .discount-field.full { grid-column: 1 / -1; }
+    .discount-field label { font-weight: 700; }
+    .discount-field input { width: 100%; min-height: 2.8rem; padding: .65rem .75rem; border: 1px solid var(--line, #dce6e1); border-radius: 9px; background: #fff; color: var(--ink, #17251f); font: inherit; }
+    .discount-field input:focus { outline: 3px solid rgba(27, 127, 99, .2); border-color: var(--brand, #1b7f63); }
+    .input-with-prefix, .input-with-suffix { display: flex; align-items: stretch; }
+    .input-with-prefix span, .input-with-suffix span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line, #dce6e1); background: var(--paper, #f7faf8); color: var(--muted, #60706a); }
+    .input-with-prefix span { border-right: 0; border-radius: 9px 0 0 9px; }
+    .input-with-prefix input { border-radius: 0 9px 9px 0; }
+    .input-with-suffix span { border-left: 0; border-radius: 0 9px 9px 0; }
+    .input-with-suffix input { border-radius: 9px 0 0 9px; }
+    .discount-error { margin: 1rem 0 0; padding: .8rem 1rem; border-radius: 9px; background: #fff0ef; color: #9b2c25; font-weight: 700; line-height: 1.45; }
+    .discount-button { width: 100%; justify-content: center; margin-top: 1.25rem; border: 0; cursor: pointer; }
+    .discount-results[hidden] { display: none; }
+    .discount-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1rem 0 1.25rem; }
+    .discount-metric { padding: 1rem; border-radius: 12px; background: var(--soft, #e8f4ef); }
+    .discount-metric span { color: var(--muted, #60706a); font-size: .92rem; }
+    .discount-metric strong { display: block; margin-top: .25rem; font-size: 1.2rem; }
+    .discount-metric.highlight { background: var(--brand, #1b7f63); color: #fff; }
+    .discount-metric.highlight span { color: rgba(255, 255, 255, .85); }
+    .discount-breakdown { width: 100%; border-collapse: collapse; }
+    .discount-breakdown th, .discount-breakdown td { padding: .7rem 0; border-bottom: 1px solid var(--line, #dce6e1); text-align: right; }
+    .discount-breakdown th:first-child, .discount-breakdown td:first-child { text-align: left; }
+    .discount-breakdown th { color: var(--muted, #60706a); font-size: .9rem; }
+    .discount-disclaimer { margin: 1.5rem 0 0; color: var(--muted, #60706a); font-size: .95rem; line-height: 1.55; }
+    .discount-info { max-width: 760px; margin: 2rem auto 0; }
+    .discount-info p { color: var(--muted, #60706a); line-height: 1.65; }
+    @media (max-width: 760px) { .discount-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .discount-grid, .discount-result-grid { grid-template-columns: 1fr; } .discount-field.full { grid-column: auto; } .discount-card, .discount-results { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="discount.html" aria-current="page">Discount</a><a href="about.html">About</a>
+      </nav>
+    </div>
+  </header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Sale price calculator</p>
+      <h1>Discount Calculator</h1>
+      <p>Find out how much you can save during a sale and what you will pay after a percentage discount and tax.</p>
+    </section>
+
+    <section class="container discount-layout">
+      <form id="discount-form" class="discount-card" novalidate>
+        <h2>Enter purchase details</h2>
+        <p class="discount-help">Use this percentage discount calculator for one item or a larger quantity.</p>
+        <div class="discount-grid">
+          <div class="discount-field full">
+            <label for="original-price">Original price</label>
+            <div class="input-with-prefix"><span aria-hidden="true">$</span><input id="original-price" name="originalPrice" type="number" min="0.01" step="0.01" inputmode="decimal" required autocomplete="off"></div>
+          </div>
+          <div class="discount-field">
+            <label for="discount-percent">Discount percentage</label>
+            <div class="input-with-suffix"><input id="discount-percent" name="discountPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" required value="20" autocomplete="off"><span aria-hidden="true">%</span></div>
+          </div>
+          <div class="discount-field">
+            <label for="quantity">Quantity <span class="muted">(optional)</span></label>
+            <input id="quantity" name="quantity" type="number" min="1" step="1" inputmode="numeric" value="1" autocomplete="off">
+          </div>
+          <div class="discount-field full">
+            <label for="tax-percent">Tax percentage <span class="muted">(optional)</span></label>
+            <div class="input-with-suffix"><input id="tax-percent" name="taxPercent" type="number" min="0" step="0.01" inputmode="decimal" value="0" autocomplete="off"><span aria-hidden="true">%</span></div>
+          </div>
+        </div>
+        <p id="form-error" class="discount-error" role="alert" hidden></p>
+        <button class="button discount-button" type="submit">Calculate discount</button>
+      </form>
+
+      <section id="results" class="discount-results" aria-live="polite" hidden>
+        <p class="eyebrow">Your estimate</p>
+        <h2>Discount summary</h2>
+        <div class="discount-result-grid" aria-label="Discount results">
+          <div class="discount-metric"><span>Original price</span><strong id="result-original">$0.00</strong></div>
+          <div class="discount-metric"><span>Discount amount</span><strong id="result-discount">$0.00</strong></div>
+          <div class="discount-metric highlight"><span>Price after discount</span><strong id="result-sale">$0.00</strong></div>
+          <div class="discount-metric"><span>Quantity</span><strong id="result-quantity">1</strong></div>
+          <div class="discount-metric"><span>Total savings</span><strong id="result-savings">$0.00</strong></div>
+          <div class="discount-metric"><span>Tax amount</span><strong id="result-tax">$0.00</strong></div>
+          <div class="discount-metric highlight"><span>Final price including tax</span><strong id="result-final">$0.00</strong></div>
+        </div>
+        <h3>Purchase breakdown</h3>
+        <table class="discount-breakdown">
+          <tbody>
+            <tr><th scope="row">Total before discount</th><td id="result-total-before">$0.00</td></tr>
+            <tr><th scope="row">Total after discount</th><td id="result-total-after">$0.00</td></tr>
+            <tr><th scope="row">Tax rate</th><td id="result-tax-rate">0.00%</td></tr>
+          </tbody>
+        </table>
+        <p class="discount-disclaimer">This calculator provides estimates based on the information you enter. Store pricing, taxes, fees and other charges may vary. This is for general informational purposes only.</p>
+      </section>
+    </section>
+
+    <section class="container discount-info">
+      <h2>About this discount calculator</h2>
+      <p>A discount calculator shows how much you can save during a sale and what the final price will be after applying a percentage discount. Enter the original price, discount, quantity and any applicable tax to estimate your total cost.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+
+  <script>
+    (function () {
+      const form = document.getElementById('discount-form');
+      const results = document.getElementById('results');
+      const error = document.getElementById('form-error');
+      const money = value => '$' + (Number.isFinite(value) ? value : 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const number = name => {
+        const raw = form.elements[name].value.trim();
+        if (raw === '') return null;
+        const value = Number(raw);
+        return Number.isFinite(value) ? value : null;
+      };
+      const set = (id, value) => { document.getElementById(id).textContent = value; };
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const original = number('originalPrice');
+        const discountRate = number('discountPercent');
+        const quantity = number('quantity');
+        const taxRate = number('taxPercent');
+        const messages = [];
+        if (original === null || !(original > 0)) messages.push('Enter an original price greater than $0.');
+        if (discountRate === null || discountRate < 0 || discountRate > 100) messages.push('Discount percentage must be between 0% and 100%.');
+        if (quantity === null || quantity < 1 || !Number.isInteger(quantity)) messages.push('Quantity must be a whole number of at least 1.');
+        if (taxRate === null || taxRate < 0) messages.push('Tax percentage must be 0% or greater.');
+        if (messages.length) { error.textContent = messages.join(' '); error.hidden = false; results.hidden = true; return; }
+
+        const discountAmount = original * discountRate / 100;
+        const salePrice = original - discountAmount;
+        const totalBefore = original * quantity;
+        const totalSavings = discountAmount * quantity;
+        const totalAfter = salePrice * quantity;
+        const taxAmount = totalAfter * taxRate / 100;
+        const finalPrice = totalAfter + taxAmount;
+        const values = [discountAmount, salePrice, totalBefore, totalSavings, totalAfter, taxAmount, finalPrice];
+        if (values.some(value => !Number.isFinite(value))) { error.textContent = 'Please enter smaller valid numbers and try again.'; error.hidden = false; results.hidden = true; return; }
+
+        error.hidden = true;
+        set('result-original', money(original));
+        set('result-discount', money(discountAmount));
+        set('result-sale', money(salePrice));
+        set('result-quantity', String(quantity));
+        set('result-savings', money(totalSavings));
+        set('result-tax', money(taxAmount));
+        set('result-final', money(finalPrice));
+        set('result-total-before', money(totalBefore));
+        set('result-total-after', money(totalAfter));
+        set('result-tax-rate', taxRate.toFixed(2) + '%');
+        results.hidden = false;
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }());
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

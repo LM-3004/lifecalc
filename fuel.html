@@ -1,1 +1,97 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fuel Cost Calculator | LifeCalc</title>
+  <meta name="description" content="Use this fuel cost calculator to estimate fuel cost per trip, fuel needed and the cost of driving from your distance, consumption and fuel price.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/fuel.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    #fuel-form input, #fuel-form select { width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; }
+    #fuel-form .field { min-width: 0; }
+    #fuel-form .field-note { display: block; margin-top: .35rem; color: var(--muted); font-size: .88rem; }
+    .fuel-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fuel-results .result-grid strong { display: block; margin-top: .3rem; }
+    .fuel-results .result-highlight { margin-top: 1rem; }
+    .fuel-results .result-section + .result-section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+    .fuel-results .result-section h3 { margin: 0 0 .75rem; font-size: 1rem; }
+    .fuel-disclaimer { color: var(--muted); font-size: .95rem; }
+    @media (max-width: 600px) { .fuel-results .result-grid { grid-template-columns: 1fr; } }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Fuel Cost Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/fuel.html"}</script>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="fuel.html" aria-current="page">Fuel Cost</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Travel calculator</p>
+      <h1>Fuel Cost Calculator</h1>
+      <p>Estimate fuel cost per trip, fuel needed and the cost of driving using your distance, vehicle consumption and local fuel price.</p>
+    </section>
+    <section class="container calculator-layout">
+      <form id="fuel-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your trip details</h2><div class="form-grid">
+          <div class="field"><label for="distance">Distance</label><input id="distance" name="distance" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="100" required><span class="field-note">One-way distance for a trip</span></div>
+          <div class="field"><label for="distance-unit">Distance unit</label><select id="distance-unit" name="distanceUnit"><option value="km">Kilometres</option><option value="miles">Miles</option></select></div>
+          <div class="field"><label for="consumption">Fuel consumption</label><input id="consumption" name="consumption" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="7" required></div>
+          <div class="field"><label for="consumption-unit">Consumption unit</label><select id="consumption-unit" name="consumptionUnit"><option value="l100">L/100 km</option><option value="mpg">MPG</option></select></div>
+          <div class="field"><label for="fuel-price">Fuel price per litre</label><div class="input-prefix"><span>$</span><input id="fuel-price" name="fuelPrice" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="2.00" required></div></div>
+          <div class="field"><label for="trips">Number of trips</label><input id="trips" name="trips" type="number" min="1" step="1" inputmode="numeric" value="1"><span class="field-note">Optional; defaults to 1</span></div>
+        </div></div>
+        <p id="fuel-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate fuel cost <span aria-hidden="true">→</span></button>
+      </form>
+      <section id="fuel-results" class="results-card fuel-results" aria-live="polite" aria-atomic="true">
+        <div class="results-empty"><span class="result-icon">⛽</span><h2>Your estimate will appear here</h2><p>Enter your trip details to see your estimated fuel use and cost.</p></div>
+      </section>
+    </section>
+    <section class="container explainer">
+      <p class="eyebrow">How it works</p><h2>Understanding fuel costs</h2>
+      <p>A fuel cost calculator estimates how much fuel you may use and what a trip could cost based on distance, fuel consumption and fuel price. This petrol cost calculator converts miles and MPG when needed, then calculates your fuel cost per trip and total cost for multiple trips.</p>
+      <p class="fuel-disclaimer">This calculator provides estimates based on the information you enter. Actual fuel consumption and fuel prices can vary depending on driving conditions, vehicle condition, traffic and other factors. This is for general informational purposes only.</p>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; disclaimer</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('fuel-form'), error = document.getElementById('fuel-form-error'), results = document.getElementById('fuel-results');
+      var money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var fuel = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      function value(id) { var input = document.getElementById(id); return input.value.trim() === '' ? NaN : Number(input.value); }
+      function showError(message) { error.textContent = message; error.hidden = false; results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>'; }
+      function calculate(event) {
+        event.preventDefault();
+        var distance = value('distance'), consumption = value('consumption'), price = value('fuel-price'), trips = value('trips');
+        var distanceUnit = document.getElementById('distance-unit').value, consumptionUnit = document.getElementById('consumption-unit').value;
+        if (!Number.isFinite(distance) || distance <= 0) return showError('Distance must be greater than 0.');
+        if (!Number.isFinite(consumption) || consumption <= 0) return showError('Fuel consumption must be greater than 0.');
+        if (!Number.isFinite(price) || price <= 0) return showError('Fuel price must be greater than 0.');
+        if (!Number.isFinite(trips) || trips < 1 || Math.floor(trips) !== trips) return showError('Number of trips must be at least 1 whole trip.');
+        var kilometres = distanceUnit === 'miles' ? distance * 1.609344 : distance;
+        var miles = kilometres / 1.609344;
+        var litresPer100Km = consumptionUnit === 'mpg' ? 235.214583 / consumption : consumption;
+        var litresPerTrip = kilometres * litresPer100Km / 100, costPerTrip = litresPerTrip * price;
+        var totalLitres = litresPerTrip * trips, totalCost = costPerTrip * trips, costPerKm = costPerTrip / kilometres, costPerMile = costPerTrip / miles;
+        var numbers = [kilometres, litresPer100Km, litresPerTrip, costPerTrip, totalLitres, totalCost, costPerKm, costPerMile];
+        if (numbers.some(function (number) { return !Number.isFinite(number) || number < 0; })) return showError('Please enter values that produce a valid estimate.');
+        error.hidden = true;
+        var totalHeading = trips === 1 ? 'Trip total' : 'Total for ' + trips + ' trips';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + money(costPerTrip) + ' fuel cost per trip</h2>' +
+          '<div class="result-section"><h3>Single-trip results</h3><div class="result-grid"><div><span>Fuel needed per trip</span><strong>' + fuel.format(litresPerTrip) + ' litres</strong></div><div><span>Fuel cost per trip</span><strong>' + money(costPerTrip) + '</strong></div><div><span>Cost per kilometre</span><strong>' + money(costPerKm) + '</strong></div><div><span>Cost per mile</span><strong>' + money(costPerMile) + '</strong></div></div></div>' +
+          '<div class="result-section result-highlight"><h3>' + totalHeading + '</h3><div class="result-grid"><div><span>Total fuel needed</span><strong>' + fuel.format(totalLitres) + ' litres</strong></div><div><span>Total fuel cost</span><strong>' + money(totalCost) + '</strong></div></div></div></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

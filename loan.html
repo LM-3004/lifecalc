@@ -1,1 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loan Repayment Calculator | LifeCalc</title>
+  <meta name="description" content="Use this loan repayment calculator to estimate your monthly loan repayment, total interest and how much your loan will cost over time.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/loan.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    #loan-form input, #loan-form select { width: 100%; min-height: 48px; padding: 10px 12px; font-size: 16px; }
+    #loan-form .input-prefix { display: flex; align-items: stretch; }
+    #loan-form .input-prefix span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line); border-right: 0; border-radius: 10px 0 0 10px; color: var(--muted); background: var(--soft); }
+    #loan-form .input-prefix input { flex: 1; min-width: 0; border-radius: 0 10px 10px 0; }
+    .loan-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .loan-results .result-grid strong { display: block; margin-top: .3rem; }
+    .loan-results .result-highlight { margin-top: 1rem; }
+    .loan-results table { width: 100%; min-width: 560px; border-collapse: collapse; }
+    .loan-results th, .loan-results td { padding: .7rem .5rem; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+    .loan-results th:first-child, .loan-results td:first-child { text-align: left; }
+    .loan-results th { color: var(--muted); font-size: .9rem; }
+    .table-scroll { overflow-x: auto; margin-top: 1rem; }
+    .loan-note { margin: .4rem 0 0; color: var(--muted); font-size: .92rem; }
+    .loan-disclaimer { color: var(--muted); font-size: .95rem; }
+    @media (max-width: 600px) {
+      #loan-form input, #loan-form select { min-height: 50px; }
+      .loan-results .result-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan Repayment Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/loan.html"}</script>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="salary.html">Hourly to Salary</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Borrowing calculator</p>
+      <h1>Loan Repayment Calculator</h1>
+      <p>Estimate your monthly loan repayment, total interest and how much will my loan cost over the full loan term.</p>
+    </section>
+
+    <section class="container calculator-layout">
+      <form id="loan-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your loan details</h2><div class="form-grid">
+          <div class="field"><label for="loan-amount">Loan amount</label><div class="input-prefix"><span>$</span><input id="loan-amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="20000" required></div></div>
+          <div class="field"><label for="interest-rate">Annual interest rate (%)</label><input id="interest-rate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="7" required></div>
+          <div class="field"><label for="loan-term">Loan term (years)</label><input id="loan-term" type="number" min="1" max="30" step="1" placeholder="5" required></div>
+          <div class="field"><label for="frequency">Repayment frequency</label><select id="frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option></select></div>
+        </div></div>
+        <p id="loan-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate loan repayments <span aria-hidden="true">→</span></button>
+      </form>
+
+      <section id="loan-results" class="results-card loan-results" aria-live="polite" aria-atomic="true">
+        <div class="results-empty"><span class="result-icon">$</span><h2>Your estimate will appear here</h2><p>Enter your loan details to see your estimated repayments.</p></div>
+      </section>
+    </section>
+
+    <section class="container explainer">
+      <p class="eyebrow">How it works</p>
+      <h2>Understanding loan repayments</h2>
+      <p>A loan repayment calculator estimates your regular repayments, total amount repaid and total interest based on the loan amount, interest rate and loan term. This loan interest calculator uses a standard amortizing loan formula and converts the monthly result to your selected frequency.</p>
+      <p class="loan-disclaimer">This calculator provides estimates based on the information you enter. Actual loan repayments, interest charges, fees and loan terms may vary between lenders. This is for general informational purposes only and is not financial advice.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('loan-form');
+      var error = document.getElementById('loan-form-error');
+      var results = document.getElementById('loan-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var frequencyNames = { weekly: 'Weekly', fortnightly: 'Fortnightly', monthly: 'Monthly' };
+
+      function dollars(value) { return Number.isFinite(value) ? money.format(value) : '$0.00'; }
+      function numberValue(id) {
+        var input = document.getElementById(id);
+        return input.value.trim() === '' ? NaN : Number(input.value);
+      }
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
+      }
+      function monthlyPayment(principal, annualRate, months) {
+        var rate = annualRate / 100 / 12;
+        if (rate === 0) return principal / months;
+        var factor = Math.pow(1 + rate, months);
+        return principal * rate * factor / (factor - 1);
+      }
+      function calculate(event) {
+        event.preventDefault();
+        var principal = numberValue('loan-amount');
+        var annualRate = numberValue('interest-rate');
+        var years = numberValue('loan-term');
+        var frequency = document.getElementById('frequency').value;
+        if (!Number.isFinite(principal) || principal <= 0) return showError('Loan amount must be greater than $0.');
+        if (!Number.isFinite(annualRate) || annualRate < 0) return showError('Interest rate must be 0 or greater.');
+        if (!Number.isFinite(years) || years < 1 || years > 30 || Math.floor(years) !== years) return showError('Loan term must be between 1 and 30 years.');
+        var months = years * 12;
+        var monthly = monthlyPayment(principal, annualRate, months);
+        var conversion = { weekly: 12 / 52, fortnightly: 12 / 26, monthly: 1 }[frequency];
+        var selected = monthly * conversion;
+        var totalRepaid = monthly * months;
+        var totalInterest = totalRepaid - principal;
+        var values = [monthly, selected, totalRepaid, totalInterest];
+        if (values.some(function (value) { return !Number.isFinite(value) || value < 0; })) return showError('Please enter values that produce a valid estimate.');
+
+        var balance = principal;
+        var rows = [];
+        for (var year = 1; year <= years; year += 1) {
+          var startBalance = balance;
+          var principalPaid = 0;
+          var interestPaid = 0;
+          for (var month = 0; month < 12; month += 1) {
+            var interest = balance * (annualRate / 100 / 12);
+            var principalPart = Math.min(balance, monthly - interest);
+            interestPaid += interest;
+            principalPaid += principalPart;
+            balance = Math.max(0, balance - principalPart);
+          }
+          rows.push('<tr><td>' + year + '</td><td>' + dollars(balance) + '</td><td>' + dollars(principalPaid) + '</td><td>' + dollars(interestPaid) + '</td></tr>');
+          if (startBalance < 0 || !Number.isFinite(balance)) return showError('Please enter values that produce a valid estimate.');
+        }
+        error.hidden = true;
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(selected) + ' ' + frequencyNames[frequency].toLowerCase() + ' repayment</h2><div class="result-grid"><div><span>' + frequencyNames[frequency] + ' repayment</span><strong>' + dollars(selected) + '</strong></div><div><span>Monthly repayment</span><strong>' + dollars(monthly) + '</strong></div><div><span>Total amount repaid</span><strong>' + dollars(totalRepaid) + '</strong></div><div><span>Total interest paid</span><strong>' + dollars(totalInterest) + '</strong></div><div><span>Loan amount</span><strong>' + dollars(principal) + '</strong></div><div><span>Loan term</span><strong>' + years + ' ' + (years === 1 ? 'year' : 'years') + '</strong></div></div><div class="result-highlight"><h3>Year-by-year breakdown</h3><p class="loan-note">Estimated figures based on monthly amortization.</p><div class="table-scroll"><table><thead><tr><th>Year</th><th>Estimated remaining balance</th><th>Principal paid</th><th>Interest paid</th></tr></thead><tbody>' + rows.join('') + '</tbody></table></div></div></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

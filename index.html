@@ -8,6 +8,57 @@
   <meta name="description" content="LifeCalc’s can I afford it calculator helps you compare a purchase with your savings and weekly surplus to estimate how much you can afford before buying.">
   <link rel="canonical" href="https://lm-3004.github.io/lifecalc/">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+      padding: 1.5rem;
+      border: 1px solid var(--line, #dce6e1);
+      border-radius: 18px;
+      background: var(--card, #fff);
+      box-shadow: 0 10px 26px rgba(23, 37, 31, 0.04);
+      gap: 1rem;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      line-height: 1.3;
+      color: var(--ink, #17251f);
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--muted, #60706a);
+      line-height: 1.6;
+    }
+
+    .feature-card .button {
+      width: 100%;
+      justify-content: center;
+      margin-top: auto;
+    }
+
+    @media (max-width: 720px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+
+      .feature-card {
+        padding: 1.25rem;
+      }
+    }
+  </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"LifeCalc","url":"https://lm-3004.github.io/lifecalc/","description":"Simple calculators for real-life decisions."}</script>
 </head>
 <body>
@@ -32,11 +83,17 @@
     <section class="container feature-grid" aria-labelledby="featured-title">
       <div class="section-heading"><p class="eyebrow">Featured calculator</p><h2 id="featured-title">Can I Afford It?</h2></div>
       <article class="feature-card">
-        <div><p>Thinking about a purchase? This purchase affordability calculator compares the cost with your savings buffer and regular weekly surplus, helping you consider questions like “can I afford this?” and “how much can I afford?”</p></div>
+        <div>
+          <h3>Can I Afford It?</h3>
+          <p>Thinking about a purchase? This purchase affordability calculator compares the cost with your savings buffer and regular weekly surplus, helping you consider questions like “can I afford this?” and “how much can I afford?”</p>
+        </div>
         <a class="button button-secondary" href="calculator.html">Use the calculator <span aria-hidden="true">→</span></a>
       </article>
       <article class="feature-card">
-        <div><p>See how long it could take to reach your savings goal.</p></div>
+        <div>
+          <h3>Savings Goal Calculator</h3>
+          <p>See how long it could take to reach your savings goal.</p>
+        </div>
         <a class="button button-secondary" href="savings.html">Use the calculator <span aria-hidden="true">→</span></a>
       </article>
     </section>

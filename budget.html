@@ -1,1 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Budget Calculator | LifeCalc</title>
+  <meta name="description" content="Use this budget calculator to compare monthly income, regular expenses and savings contributions, and see how much money you have left.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/budget.html">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Budget Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/budget.html"}</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    .budget-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+    .budget-card, .budget-results { padding: clamp(1.25rem, 3vw, 2rem); background: var(--card, #fff); border: 1px solid var(--line, #dce6e1); border-radius: 18px; box-shadow: 0 10px 26px rgba(23, 37, 31, .04); }
+    .budget-card h2, .budget-results h2 { margin-top: 0; }
+    .budget-section { padding: 1.25rem 0; border-top: 1px solid var(--line, #dce6e1); }
+    .budget-section:first-of-type { padding-top: 0; border-top: 0; }
+    .budget-section h3 { margin: 0 0 1rem; font-size: 1.05rem; }
+    .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .budget-field { display: flex; flex-direction: column; gap: .4rem; }
+    .budget-field.full { grid-column: 1 / -1; }
+    .budget-field label { font-weight: 700; }
+    .budget-field input, .budget-field select { width: 100%; min-height: 2.8rem; padding: .65rem .75rem; border: 1px solid var(--line, #dce6e1); border-radius: 9px; background: #fff; color: var(--ink, #17251f); font: inherit; font-size: 16px; }
+    .budget-field input:focus, .budget-field select:focus { outline: 3px solid rgba(27, 127, 99, .2); border-color: var(--brand, #1b7f63); }
+    .currency-input { display: flex; align-items: stretch; }
+    .currency-input span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 9px 0 0 9px; color: var(--muted, #60706a); background: var(--soft, #e8f4ef); }
+    .currency-input input { min-width: 0; border-radius: 0 9px 9px 0; }
+    .budget-help { margin: 0 0 1rem; color: var(--muted, #60706a); line-height: 1.5; }
+    .budget-error { margin: 1rem 0 0; padding: .8rem 1rem; border-radius: 9px; background: #fff0ef; color: #9b2c25; font-weight: 700; }
+    .budget-button { width: 100%; justify-content: center; margin-top: 1.25rem; border: 0; cursor: pointer; }
+    .budget-results[hidden] { display: none; }
+    .budget-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 1rem 0 1.25rem; }
+    .budget-metric { padding: 1rem; border-radius: 12px; background: var(--soft, #e8f4ef); }
+    .budget-metric span { color: var(--muted, #60706a); font-size: .92rem; }
+    .budget-metric strong { display: block; margin-top: .25rem; font-size: 1.25rem; }
+    .budget-message { margin: 0 0 1.25rem; padding: 1rem; border-radius: 12px; background: var(--soft, #e8f4ef); line-height: 1.5; }
+    .budget-message.negative { background: var(--warn, #fff5e5); color: var(--warn-ink, #8a5a13); }
+    .budget-breakdown { width: 100%; border-collapse: collapse; }
+    .budget-breakdown th, .budget-breakdown td { padding: .7rem 0; border-bottom: 1px solid var(--line, #dce6e1); text-align: right; }
+    .budget-breakdown th:first-child, .budget-breakdown td:first-child { text-align: left; }
+    .budget-breakdown th { color: var(--muted, #60706a); font-size: .9rem; }
+    .budget-disclaimer { margin: 1.5rem 0 0; color: var(--muted, #60706a); font-size: .95rem; }
+    @media (max-width: 760px) { .budget-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .budget-grid, .budget-result-grid { grid-template-columns: 1fr; } .budget-field.full { grid-column: auto; } .budget-card, .budget-results { padding: 1.25rem; } }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="budget.html" aria-current="page">Budget</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Budget calculator</p>
+      <h1>Budget Calculator</h1>
+      <p>Compare your income with regular expenses and savings contributions to see how much money do I have left each month. This monthly budget calculator is also an income and expenses calculator for everyday planning.</p>
+    </section>
+
+    <section class="container budget-layout">
+      <form id="budget-form" class="budget-card" novalidate>
+        <div class="budget-section">
+          <h2>Your income</h2>
+          <div class="budget-grid">
+            <div class="budget-field full"><label for="main-income">Main income amount</label><div class="currency-input"><span aria-hidden="true">$</span><input id="main-income" name="mainIncome" type="number" min="0.01" max="1000000000" step="0.01" inputmode="decimal" required></div></div>
+            <div class="budget-field"><label for="income-frequency">Income frequency</label><select id="income-frequency" name="incomeFrequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div>
+            <div class="budget-field"><label for="other-income">Other monthly income <span class="muted">(optional)</span></label><div class="currency-input"><span aria-hidden="true">$</span><input id="other-income" name="otherIncome" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          </div>
+        </div>
+
+        <div class="budget-section"><h3>Housing</h3><div class="budget-grid">
+          <div class="budget-field"><label for="housing">Rent or mortgage per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="housing" name="housing" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="other-housing">Other housing costs per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="other-housing" name="otherHousing" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+        </div></div>
+
+        <div class="budget-section"><h3>Living expenses</h3><div class="budget-grid">
+          <div class="budget-field"><label for="food">Groceries/food per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="food" name="food" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="transport">Transport per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="transport" name="transport" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="utilities">Utilities/bills per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="utilities" name="utilities" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="insurance">Insurance per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="insurance" name="insurance" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="phone">Phone/internet per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="phone" name="phone" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="entertainment">Entertainment/discretionary spending per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="entertainment" name="entertainment" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+        </div></div>
+
+        <div class="budget-section"><h3>Financial commitments</h3><div class="budget-grid">
+          <div class="budget-field"><label for="debt">Debt repayments per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="debt" name="debt" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="savings">Savings contribution per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="savings" name="savings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="budget-field"><label for="other-expenses">Other expenses per month</label><div class="currency-input"><span aria-hidden="true">$</span><input id="other-expenses" name="otherExpenses" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="0"></div></div>
+        </div></div>
+        <p id="form-error" class="budget-error" role="alert" hidden>Please enter a main income greater than $0. Other income and all expense amounts must be $0 or greater, using valid numbers.</p>
+        <button class="button budget-button" type="submit">Calculate my budget</button>
+      </form>
+
+      <section id="results" class="budget-results" aria-live="polite" hidden>
+        <p class="eyebrow">Your estimate</p><h2>Monthly budget summary</h2>
+        <div class="budget-result-grid" aria-label="Budget results">
+          <div class="budget-metric"><span>Monthly income</span><strong id="result-income">$0.00</strong></div>
+          <div class="budget-metric"><span>Monthly expenses</span><strong id="result-expenses">$0.00</strong></div>
+          <div class="budget-metric"><span>Monthly savings</span><strong id="result-savings">$0.00</strong></div>
+          <div class="budget-metric"><span>Money remaining</span><strong id="result-remaining">$0.00</strong></div>
+          <div class="budget-metric"><span>Expense percentage</span><strong id="result-expense-percent">0.00%</strong></div>
+          <div class="budget-metric"><span>Savings percentage</span><strong id="result-savings-percent">0.00%</strong></div>
+        </div>
+        <p id="result-message" class="budget-message"></p>
+        <h3>Category breakdown</h3>
+        <p class="budget-help">Each percentage is based on total monthly income.</p>
+        <table class="budget-breakdown"><thead><tr><th scope="col">Category</th><th scope="col">Monthly amount</th><th scope="col">% of income</th></tr></thead><tbody id="breakdown-body"></tbody></table>
+        <p class="budget-disclaimer">This calculator provides estimates based on the information you enter and is for general informational purposes only. It is not financial advice.</p>
+      </section>
+    </section>
+    <section class="container narrow-page"><h2>About this budget calculator</h2><p>A budget calculator helps you compare your monthly income with your regular expenses and savings contributions.</p></section>
+  </main>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; disclaimer</a></nav></div></footer>
+
+  <script>
+    (function () {
+      const form = document.getElementById('budget-form');
+      const result = document.getElementById('results');
+      const error = document.getElementById('form-error');
+      const expenseFields = [
+        ['Housing', 'housing'], ['Other housing', 'otherHousing'], ['Groceries/food', 'food'],
+        ['Transport', 'transport'], ['Utilities/bills', 'utilities'], ['Insurance', 'insurance'],
+        ['Phone/internet', 'phone'], ['Entertainment/discretionary', 'entertainment'],
+        ['Debt repayments', 'debt'], ['Other expenses', 'otherExpenses']
+      ];
+      const money = value => '$' + (Number.isFinite(value) ? value : 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const read = name => {
+        const raw = form.elements[name].value.trim();
+        if (raw === '') return 0;
+        const value = Number(raw);
+        return Number.isFinite(value) && value >= 0 && value <= 1000000000 ? value : null;
+      };
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const main = read('mainIncome');
+        const otherIncome = read('otherIncome');
+        const values = Object.fromEntries(expenseFields.map(([, name]) => [name, read(name)]));
+        const invalid = main === null || !(main > 0) || otherIncome === null || Object.values(values).some(value => value === null);
+        if (invalid) { error.hidden = false; result.hidden = true; return; }
+        error.hidden = true;
+        const multipliers = { weekly: 52 / 12, fortnightly: 26 / 12, monthly: 1, yearly: 1 / 12 };
+        const monthlyIncome = main * multipliers[form.elements.incomeFrequency.value] + otherIncome;
+        const totalExpenses = Object.values(values).reduce((sum, value) => sum + value, 0);
+        const savings = values.savings;
+        const commitments = totalExpenses + savings;
+        const remaining = monthlyIncome - commitments;
+        const expensePercent = monthlyIncome > 0 ? totalExpenses / monthlyIncome * 100 : 0;
+        const savingsPercent = monthlyIncome > 0 ? savings / monthlyIncome * 100 : 0;
+        document.getElementById('result-income').textContent = money(monthlyIncome);
+        document.getElementById('result-expenses').textContent = money(totalExpenses);
+        document.getElementById('result-savings').textContent = money(savings);
+        document.getElementById('result-remaining').textContent = money(remaining);
+        document.getElementById('result-expense-percent').textContent = expensePercent.toFixed(2) + '%';
+        document.getElementById('result-savings-percent').textContent = savingsPercent.toFixed(2) + '%';
+        const message = document.getElementById('result-message');
+        message.className = 'budget-message' + (remaining < 0 ? ' negative' : '');
+        message.textContent = remaining > 0
+          ? `Based on the figures entered, approximately ${money(remaining)} remains each month after the listed expenses and savings contribution.`
+          : remaining === 0
+            ? 'Based on the figures entered, your listed expenses and savings contribution use approximately all of your monthly income.'
+            : `Based on the figures entered, your listed expenses and savings contribution exceed your monthly income by approximately ${money(Math.abs(remaining))}.`;
+        document.getElementById('breakdown-body').innerHTML = expenseFields.map(([label, name]) => {
+          const amount = values[name];
+          return `<tr><th scope="row">${label}</th><td>${money(amount)}</td><td>${(amount / monthlyIncome * 100).toFixed(2)}%</td></tr>`;
+        }).join('') + `<tr><th scope="row">Savings contribution</th><td>${money(savings)}</td><td>${savingsPercent.toFixed(2)}%</td></tr>`;
+        result.hidden = false;
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }());
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

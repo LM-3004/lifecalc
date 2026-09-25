@@ -1,1 +1,146 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Debt Payoff Calculator | LifeCalc</title>
+  <meta name="description" content="Use this debt payoff calculator to estimate how long it may take to pay off debt, your monthly debt payment, and potential interest savings.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/debt.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .debt-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;align-items:start}
+    .debt-card,.debt-results,.comparison-card{background:var(--card,#fff);border:1px solid var(--line,#dce6e1);border-radius:18px;box-shadow:0 10px 26px rgba(23,37,31,.04)}
+    .debt-card{padding:clamp(1.25rem,3vw,2rem)}
+    .debt-card h2,.debt-results h2{margin-top:0}
+    .debt-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .debt-field{display:flex;flex-direction:column;gap:.4rem}
+    .debt-field.full{grid-column:1/-1}
+    .debt-field label{font-weight:700}
+    .debt-field input,.debt-field select{width:100%;min-height:2.8rem;padding:.65rem .75rem;border:1px solid var(--line,#dce6e1);border-radius:9px;background:#fff;color:var(--ink,#17251f);font:inherit}
+    .debt-field input:focus,.debt-field select:focus{outline:3px solid rgba(27,127,99,.2);border-color:var(--brand,#1b7f63)}
+    .debt-input{display:flex;align-items:center;border:1px solid var(--line,#dce6e1);border-radius:9px;background:#fff;overflow:hidden}
+    .debt-input span{padding-left:.75rem;color:var(--muted,#60706a);font-weight:700}
+    .debt-input input{border:0;border-radius:0;min-width:0}
+    .debt-input input:focus{outline:0}
+    .debt-help{margin:0;color:var(--muted,#60706a);font-size:.9rem;line-height:1.5}
+    .debt-error{margin:1rem 0 0;padding:.8rem 1rem;border-radius:9px;background:#fff0ef;color:#9b2c25;font-weight:700}
+    .debt-button{margin-top:1.25rem;width:100%;justify-content:center;border:0;cursor:pointer}
+    .debt-results{padding:clamp(1.25rem,3vw,2rem)}
+    .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0 1.25rem}
+    .result-item{padding:1rem;border-radius:12px;background:var(--soft,#e8f4ef)}
+    .result-item strong{display:block;font-size:1.25rem;color:var(--ink,#17251f);margin-top:.25rem}
+    .result-label{color:var(--muted,#60706a);font-size:.9rem}
+    .debt-warning{padding:1rem;border-radius:10px;background:var(--warn,#fff5e5);color:var(--warn-ink,#8a5a13);font-weight:700;line-height:1.5}
+    .comparison{margin-top:1.5rem}.comparison h2{margin-bottom:1rem}
+    .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .comparison-card{padding:1.15rem}.comparison-card h3{margin:.1rem 0 1rem;font-size:1.05rem}
+    .comparison-card dl{margin:0;display:grid;gap:.65rem}.comparison-card dl div{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--line,#dce6e1);padding-bottom:.5rem}.comparison-card dl div:last-child{border-bottom:0}.comparison-card dt{color:var(--muted,#60706a)}.comparison-card dd{margin:0;text-align:right;font-weight:700}
+    .comparison-note{margin:1rem 0 0;color:var(--muted,#60706a);line-height:1.5}
+    .debt-content{max-width:760px;margin:2rem auto}.debt-content h2{margin-top:1.5rem}
+    @media(max-width:760px){.debt-layout,.comparison-grid{grid-template-columns:1fr}.debt-form-grid{grid-template-columns:1fr}.debt-field.full{grid-column:auto}.result-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:380px){.result-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="about.html">About</a></nav>
+    </div>
+  </header>
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Debt repayment calculator</p>
+      <h1>Debt Payoff Calculator</h1>
+      <p>Estimate how long to pay off debt, your monthly debt payment, and how extra payments could reduce the interest you pay.</p>
+    </section>
+    <section class="container debt-layout">
+      <form id="debt-form" class="debt-card" novalidate>
+        <h2>Your debt details</h2>
+        <div class="debt-form-grid">
+          <div class="debt-field full"><label for="balance">Current debt balance</label><div class="debt-input"><span aria-hidden="true">$</span><input id="balance" name="balance" type="number" min="0.01" step="0.01" inputmode="decimal" required aria-describedby="balance-help"></div><p id="balance-help" class="debt-help">Enter the amount you still owe.</p></div>
+          <div class="debt-field"><label for="rate">Annual interest rate (%)</label><input id="rate" name="rate" type="number" min="0" step="0.01" inputmode="decimal" required></div>
+          <div class="debt-field"><label for="payment">Current payment amount</label><div class="debt-input"><span aria-hidden="true">$</span><input id="payment" name="payment" type="number" min="0.01" step="0.01" inputmode="decimal" required></div></div>
+          <div class="debt-field"><label for="payment-frequency">Payment frequency</label><select id="payment-frequency" name="payment-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option></select></div>
+          <div class="debt-field"><label for="extra">Optional extra payment</label><div class="debt-input"><span aria-hidden="true">$</span><input id="extra" name="extra" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div></div>
+          <div class="debt-field"><label for="extra-frequency">Extra payment frequency</label><select id="extra-frequency" name="extra-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option></select></div>
+        </div>
+        <p id="form-error" class="debt-error" role="alert" hidden></p>
+        <button class="button button-primary debt-button" type="submit">Calculate payoff time <span aria-hidden="true">→</span></button>
+      </form>
+      <section id="results" class="debt-results" aria-live="polite" aria-atomic="true">
+        <h2>Your estimate</h2>
+        <p>Enter your debt details to see an estimated repayment plan.</p>
+      </section>
+    </section>
+    <section id="comparison" class="container comparison" hidden aria-live="polite">
+      <h2>Current payment vs extra payment</h2>
+      <div class="comparison-grid"><article class="comparison-card"><h3>Current payment only</h3><div id="current-scenario"></div></article><article class="comparison-card"><h3>Current payment + extra payment</h3><div id="extra-scenario"></div></article></div>
+      <p id="comparison-note" class="comparison-note"></p>
+    </section>
+    <section class="container debt-content"><p class="eyebrow">How it works</p><h2>Plan your debt repayment</h2><p>A debt payoff calculator estimates how long it may take to repay a debt based on your balance, interest rate and payment amount. Adding extra payments can reduce the estimated repayment time and total interest paid.</p><p><strong>Disclaimer:</strong> This calculator provides estimates based on the information you enter. Actual repayment amounts and timelines may vary depending on your lender, interest calculations, fees, payment timing and other factors. This is for general informational purposes only and is not financial advice.</p></section>
+  </main>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const form = document.getElementById('debt-form');
+      const error = document.getElementById('form-error');
+      const results = document.getElementById('results');
+      const comparison = document.getElementById('comparison');
+      const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+      const number = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
+      const monthlyAmount = (amount, frequency) => amount * ({ weekly: 52 / 12, fortnightly: 26 / 12, monthly: 1 }[frequency]);
+      const money = value => currency.format(Math.max(0, value));
+      const time = months => { const rounded = Math.max(1, Math.ceil(months)); const years = Math.floor(rounded / 12); const remaining = rounded % 12; return years ? years + ' year' + (years === 1 ? '' : 's') + (remaining ? ' ' + remaining + ' month' + (remaining === 1 ? '' : 's') : '') : remaining + ' month' + (remaining === 1 ? '' : 's'); };
+      function scenario(balance, rate, monthlyPayment) {
+        const monthlyInterest = balance * (rate / 100 / 12);
+        if (!Number.isFinite(monthlyPayment) || monthlyPayment <= monthlyInterest) return null;
+        const monthlyRate = rate / 100 / 12;
+        const months = monthlyRate === 0 ? balance / monthlyPayment : -Math.log(1 - (monthlyRate * balance / monthlyPayment)) / Math.log(1 + monthlyRate);
+        if (!Number.isFinite(months) || months <= 0) return null;
+        const totalPaid = monthlyPayment * months;
+        return { months, totalPaid, interest: Math.max(0, totalPaid - balance) };
+      }
+      function scenarioMarkup(data) {
+        if (!data) return '<p class="debt-warning">This payment is not high enough to pay off the debt at the entered interest rate.</p>';
+        return '<dl><div><dt>Payoff time</dt><dd>' + time(data.months) + '</dd></div><div><dt>Total interest</dt><dd>' + money(data.interest) + '</dd></div><div><dt>Total paid</dt><dd>' + money(data.totalPaid) + '</dd></div></dl>';
+      }
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        error.hidden = true; comparison.hidden = true;
+        const balance = Number(document.getElementById('balance').value);
+        const rate = Number(document.getElementById('rate').value);
+        const payment = Number(document.getElementById('payment').value);
+        const extra = Number(document.getElementById('extra').value || 0);
+        const paymentFrequency = document.getElementById('payment-frequency').value;
+        const extraFrequency = document.getElementById('extra-frequency').value;
+        if (!Number.isFinite(balance) || balance <= 0 || !Number.isFinite(rate) || rate < 0 || !Number.isFinite(payment) || payment <= 0 || !Number.isFinite(extra) || extra < 0) {
+          error.textContent = 'Please enter a debt balance and payment greater than $0, an interest rate of 0% or more, and an extra payment of $0 or more.';
+          error.hidden = false; return;
+        }
+        const regularMonthly = monthlyAmount(payment, paymentFrequency);
+        const extraMonthly = monthlyAmount(extra, extraFrequency);
+        const current = scenario(balance, rate, regularMonthly);
+        const withExtra = scenario(balance, rate, regularMonthly + extraMonthly);
+        const monthlyInterest = balance * (rate / 100 / 12);
+        if (!withExtra) {
+          results.innerHTML = '<h2>Your estimate</h2><div class="debt-warning">Your current payment is not high enough to pay off this debt at the entered interest rate. Increase your payment or add an extra payment.</div><p class="debt-help">At the current balance, the estimated monthly interest is ' + money(monthlyInterest) + '.</p>';
+        } else {
+          results.innerHTML = '<h2>Your estimate</h2><div class="result-grid"><div class="result-item"><span class="result-label">Total monthly payment</span><strong>' + money(regularMonthly + extraMonthly) + '</strong></div><div class="result-item"><span class="result-label">Estimated payoff time</span><strong>' + time(withExtra.months) + '</strong></div><div class="result-item"><span class="result-label">Estimated total amount paid</span><strong>' + money(withExtra.totalPaid) + '</strong></div><div class="result-item"><span class="result-label">Estimated total interest</span><strong>' + money(withExtra.interest) + '</strong></div></div>' + (!current ? '<div class="debt-warning">Your current payment is not high enough to pay off this debt at the entered interest rate, but the extra payment makes repayment possible.</div>' : '') + '<p class="debt-help">Estimated payoff time: ' + number.format(withExtra.months) + ' months (' + time(withExtra.months) + ').</p>';
+        }
+        document.getElementById('current-scenario').innerHTML = scenarioMarkup(current);
+        document.getElementById('extra-scenario').innerHTML = scenarioMarkup(withExtra);
+        const note = document.getElementById('comparison-note');
+        if (extra === 0) note.textContent = 'With an extra payment of $0, there is no difference between the two scenarios.';
+        else if (!current) note.textContent = 'The current payment does not cover the estimated monthly interest, so a payoff time and savings comparison is not available until the payment is increased.';
+        else if (!withExtra) note.textContent = 'The extra payment scenario could not be calculated with these inputs.';
+        else note.textContent = 'Making the extra payment could save approximately ' + money(Math.max(0, current.interest - withExtra.interest)) + ' in interest and ' + time(Math.max(0, current.months - withExtra.months)) + ' of repayment time.';
+        comparison.hidden = false;
+      });
+    }());
+  </script>
+</body>
+</html>

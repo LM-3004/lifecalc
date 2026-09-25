@@ -1,1 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compound Interest Calculator | LifeCalc</title>
+  <meta name="description" content="Use this compound interest calculator to estimate investment growth, total contributions and interest over time with regular contributions.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/compound.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    #compound-form input, #compound-form select { width: 100%; min-height: 48px; box-sizing: border-box; }
+    #compound-form input, #compound-form select { font-size: 16px; }
+    #compound-form .input-prefix { display: flex; align-items: stretch; }
+    #compound-form .input-prefix input { flex: 1; min-width: 0; border-radius: 0 10px 10px 0; }
+    #compound-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--soft, #e8f4ef); color: var(--muted, #60706a); }
+    .compound-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .compound-results .result-grid strong { display: block; margin-top: .3rem; }
+    .compound-results .result-highlight { margin-top: 1rem; overflow-x: auto; }
+    .compound-results table { width: 100%; min-width: 480px; border-collapse: collapse; }
+    .compound-results th, .compound-results td { padding: .7rem .5rem; border-bottom: 1px solid var(--line, #dce6e1); text-align: right; white-space: nowrap; }
+    .compound-results th:first-child, .compound-results td:first-child { text-align: left; }
+    .compound-results th { color: var(--muted, #60706a); font-size: .9rem; }
+    .comparison-list { list-style: none; margin: 0; padding: 0; }
+    .comparison-list li { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--line, #dce6e1); }
+    .comparison-list li:last-child { border-bottom: 0; }
+    .comparison-list strong { text-align: right; }
+    .compound-help { margin: .4rem 0 0; color: var(--muted, #60706a); font-size: .92rem; }
+    @media (max-width: 600px) {
+      #compound-form input, #compound-form select { min-height: 50px; font-size: 16px; }
+      .compound-results .result-grid { grid-template-columns: 1fr; }
+      .comparison-list li { align-items: flex-start; flex-direction: column; gap: .25rem; }
+      .comparison-list strong { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="salary.html">Hourly to Salary</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Investment growth calculator</p>
+      <h1>Compound Interest Calculator</h1>
+      <p>Use this compound interest calculator to estimate how an initial investment and regular contributions could grow over time. Calculate compound interest with different contribution and compounding frequencies.</p>
+    </section>
+
+    <section class="container calculator-layout">
+      <form id="compound-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your investment details</h2><div class="form-grid">
+          <div class="field"><label for="initial-investment">Initial investment</label><div class="input-prefix"><span>$</span><input id="initial-investment" type="number" min="0" step="0.01" inputmode="decimal" value="1000"></div></div>
+          <div class="field"><label for="regular-contribution">Regular contribution amount</label><div class="input-prefix"><span>$</span><input id="regular-contribution" type="number" min="0" step="0.01" inputmode="decimal" value="100"></div></div>
+          <div class="field"><label for="contribution-frequency">Contribution frequency</label><select id="contribution-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div>
+          <div class="field"><label for="interest-rate">Annual interest rate (%)</label><input id="interest-rate" type="number" min="0" step="0.01" inputmode="decimal" value="7"></div>
+          <div class="field"><label for="compounding-frequency">Compounding frequency</label><select id="compounding-frequency"><option value="daily">Daily</option><option value="monthly" selected>Monthly</option><option value="quarterly">Quarterly</option><option value="yearly">Yearly</option></select></div>
+          <div class="field"><label for="investment-period">Investment period in years</label><input id="investment-period" type="number" min="0.01" max="50" step="0.01" inputmode="decimal" value="10"></div>
+        </div></div>
+        <p id="compound-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate compound interest <span aria-hidden="true">→</span></button>
+      </form>
+
+      <section id="compound-results" class="results-card compound-results" aria-live="polite" aria-atomic="true">
+        <div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your investment details to see an estimated growth projection.</p></div>
+      </section>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>Understanding compound growth</h2><p>Compound interest means you earn interest on your initial money as well as on interest that has accumulated over time. The compound interest formula uses your annual rate and selected compounding frequency, while regular contributions are added consistently during each compounding period.</p></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('compound-form');
+      var error = document.getElementById('compound-form-error');
+      var results = document.getElementById('compound-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      function dollars(value) { return Number.isFinite(value) ? money.format(value) : '$0.00'; }
+      function value(id) { var input = document.getElementById(id); return input.value.trim() === '' ? NaN : Number(input.value); }
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
+      }
+      function frequencyDetails(frequency) {
+        return { daily: { periods: 365, contributionPeriods: 365 / 12 }, monthly: { periods: 12, contributionPeriods: 1 }, quarterly: { periods: 4, contributionPeriods: 3 }, yearly: { periods: 1, contributionPeriods: 12 } }[frequency];
+      }
+      function monthlyContribution(amount, frequency) {
+        return amount * ({ weekly: 52 / 12, fortnightly: 26 / 12, monthly: 1, yearly: 1 / 12 }[frequency]);
+      }
+      function project(initial, monthlyAmount, rate, compoundFrequency, years) {
+        var details = frequencyDetails(compoundFrequency);
+        var totalPeriods = Math.round(years * details.periods);
+        var periodRate = rate / details.periods;
+        var contributionPerPeriod = monthlyAmount * (12 / details.periods);
+        var balance = initial;
+        var rows = [];
+        for (var period = 1; period <= totalPeriods; period += 1) {
+          balance = balance * (1 + periodRate) + contributionPerPeriod;
+          if (period % details.periods === 0 || period === totalPeriods) {
+            var completedYears = period / details.periods;
+            var contributed = initial + monthlyAmount * 12 * completedYears;
+            rows.push({ year: completedYears, contributed: contributed, balance: balance, interest: balance - contributed });
+          }
+        }
+        var totalContributed = initial + monthlyAmount * 12 * years;
+        return { balance: balance, totalContributed: totalContributed, interest: balance - totalContributed, rows: rows };
+      }
+      function calculate(event) {
+        event.preventDefault();
+        var initial = value('initial-investment');
+        var contribution = value('regular-contribution');
+        var contributionFrequency = document.getElementById('contribution-frequency').value;
+        var annualRate = value('interest-rate');
+        var compoundingFrequency = document.getElementById('compounding-frequency').value;
+        var years = value('investment-period');
+        if (!Number.isFinite(initial) || initial < 0) return showError('Initial investment cannot be negative and must be a valid number.');
+        if (!Number.isFinite(contribution) || contribution < 0) return showError('Regular contribution cannot be negative and must be a valid number.');
+        if (!Number.isFinite(annualRate) || annualRate < 0) return showError('Annual interest rate cannot be negative and must be a valid number.');
+        if (!Number.isFinite(years) || years <= 0 || years > 50) return showError('Investment period must be greater than 0 and no more than 50 years.');
+        var monthlyAmount = monthlyContribution(contribution, contributionFrequency);
+        var rate = annualRate / 100;
+        var projection = project(initial, monthlyAmount, rate, compoundingFrequency, years);
+        var checkValues = [monthlyAmount, projection.balance, projection.totalContributed, projection.interest];
+        if (checkValues.some(function (number) { return !Number.isFinite(number); })) return showError('Please enter values that produce a valid estimate.');
+        var rows = projection.rows.map(function (row) { return '<tr><td>' + row.year + '</td><td>' + dollars(row.contributed) + '</td><td>' + dollars(row.balance) + '</td><td>' + dollars(row.interest) + '</td></tr>'; }).join('');
+        var comparison = [-2, -1, 0, 1, 2].map(function (change) {
+          var scenarioRate = Math.max(0, rate + change / 100);
+          var scenario = project(initial, monthlyAmount, scenarioRate, compoundingFrequency, years);
+          var label = change === 0 ? annualRate.toFixed(2) + '% (entered rate)' : (annualRate + change).toFixed(2) + '%';
+          return '<li><span>' + label + '</span><strong>' + dollars(scenario.balance) + '</strong></li>';
+        }).join('');
+        error.hidden = true;
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(projection.balance) + ' final balance</h2><div class="result-grid"><div><span>Final balance</span><strong>' + dollars(projection.balance) + '</strong></div><div><span>Total contributions</span><strong>' + dollars(projection.totalContributed) + '</strong></div><div><span>Total interest earned</span><strong>' + dollars(projection.interest) + '</strong></div><div><span>Initial investment</span><strong>' + dollars(initial) + '</strong></div><div><span>Growth from interest</span><strong>' + dollars(projection.interest) + '</strong></div></div><div class="result-highlight"><h3>Year-by-year projection</h3><table><thead><tr><th>Year</th><th>Total contributed</th><th>Estimated balance</th><th>Interest earned</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="result-highlight"><h3>Rate comparison</h3><p class="compound-help">Estimated final balance using the same investment details and different annual rates.</p><ul class="comparison-list">' + comparison + '</ul></div><p class="result-note">This calculator provides estimates based on the information you enter. Actual investment returns can vary and may be affected by fees, taxes, market performance and other factors. This is for general informational purposes only and is not financial advice.</p></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

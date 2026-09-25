@@ -1,1 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Car Affordability Calculator | LifeCalc</title>
+  <meta name="description" content="Use this car affordability calculator and car loan calculator to estimate your monthly car cost from the price, loan, income and expenses.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/car.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* These controls stay comfortable and vertically aligned on small screens. */
+    #car-form input, #car-form select { box-sizing: border-box; min-height: 48px; width: 100%; padding: 10px 12px; line-height: 1.25; font-size: 16px; }
+    #car-form .input-prefix, #car-form .input-with-select { display: flex; align-items: stretch; }
+    #car-form .input-prefix span { display: flex; align-items: center; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 10px 0 0 10px; color: var(--muted); background: var(--paper); }
+    #car-form .input-prefix input { border-radius: 0 10px 10px 0; min-width: 0; }
+    #car-form .input-with-select input { min-width: 0; border-radius: 10px 0 0 10px; }
+    #car-form .input-with-select select { width: 7.5rem; flex: 0 0 7.5rem; border-left: 0; border-radius: 0 10px 10px 0; background: var(--paper); }
+    #car-form .form-help { margin-top: -.5rem; }
+    .car-disclaimer { margin-top: 1rem; color: var(--muted); font-size: .95rem; }
+    .breakdown { margin: 1.25rem 0 0; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+    .breakdown h3 { margin: 0 0 .6rem; font-size: 1rem; }
+    .breakdown p { margin: .35rem 0; color: var(--muted); }
+    .result-list { display: grid; gap: .65rem; margin: 1.25rem 0; }
+    .result-list div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .65rem; border-bottom: 1px solid var(--line); }
+    .result-list dt { color: var(--muted); }
+    .result-list dd { margin: 0; font-weight: 700; text-align: right; }
+    .result-message { padding: 1rem; border-radius: 12px; background: var(--soft); line-height: 1.5; }
+    .result-message.negative { background: var(--warn); color: var(--warn-ink); }
+    @media (max-width: 600px) {
+      #car-form input, #car-form select { min-height: 50px; }
+      #car-form .input-with-select select { width: 7rem; flex-basis: 7rem; }
+      .result-list div { align-items: baseline; }
+    }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Car Affordability Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/car.html"}</script>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="savings.html">Savings Goal</a><a href="car.html" aria-current="page">Car Calculator</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Car loan calculator</p>
+      <h1>Car Affordability Calculator</h1>
+      <p>Estimate the potential cost of buying a car based on the car price, deposit, loan details, income and ongoing expenses.</p>
+    </section>
+
+    <section class="container calculator-layout">
+      <form id="car-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Car and loan details</h2><div class="form-grid">
+          <div class="field"><label for="car-price">Car price</label><div class="input-prefix"><span>$</span><input id="car-price" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="deposit">Deposit</label><div class="input-prefix"><span>$</span><input id="deposit" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="loan-term">Loan term</label><select id="loan-term" required><option value="" selected disabled>Select a term</option><option value="1">1 year</option><option value="2">2 years</option><option value="3">3 years</option><option value="4">4 years</option><option value="5">5 years</option><option value="6">6 years</option><option value="7">7 years</option></select></div>
+          <div class="field"><label for="interest-rate">Interest rate</label><div class="input-with-select"><input id="interest-rate" type="number" min="0" max="1000" step="0.01" inputmode="decimal" required><span class="input-suffix">%</span></div></div>
+        </div></div>
+
+        <div class="form-section"><h2>Income and existing expenses</h2><div class="form-grid">
+          <div class="field"><label for="income">Income</label><div class="input-with-select"><input id="income" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" required><select id="income-frequency" aria-label="Income frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
+          <div class="field"><label for="existing-expenses">Existing expenses</label><div class="input-with-select"><input id="existing-expenses" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required><select id="expenses-frequency" aria-label="Existing expenses frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
+        </div></div>
+
+        <div class="form-section"><h2>Ongoing monthly car costs</h2><p class="form-help">Enter each amount as a monthly estimate.</p><div class="form-grid">
+          <div class="field"><label for="insurance">Insurance</label><div class="input-prefix"><span>$</span><input id="insurance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="fuel">Fuel</label><div class="input-prefix"><span>$</span><input id="fuel" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="maintenance">Maintenance/servicing</label><div class="input-prefix"><span>$</span><input id="maintenance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="registration">Registration and other car costs</label><div class="input-prefix"><span>$</span><input id="registration" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+        </div></div>
+        <p id="car-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate car costs <span aria-hidden="true">→</span></button>
+        <p class="car-disclaimer">Estimates are based on the information you enter and are for general informational purposes only. They are not financial advice. Actual loan rates, repayments and vehicle costs may vary.</p>
+      </form>
+
+      <section id="car-results" class="results-card" aria-live="polite" aria-atomic="true">
+        <div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form to see estimated loan, monthly car and remaining-money figures.</p></div>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('car-form');
+      var error = document.getElementById('car-form-error');
+      var results = document.getElementById('car-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var MAX = 1000000000000;
+      function value(id) { return document.getElementById(id).value.trim(); }
+      function amount(id) { return Number(value(id)); }
+      function dollars(n) { return money.format(Number.isFinite(n) ? n : 0); }
+      function monthly(n, frequency) { return frequency === 'weekly' ? n * 52 / 12 : frequency === 'fortnightly' ? n * 26 / 12 : frequency === 'yearly' ? n / 12 : n; }
+      function showError(message) { error.textContent = message; error.hidden = false; results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>'; }
+      function calculate(event) {
+        event.preventDefault(); error.hidden = true;
+        var fields = ['car-price','current-savings','deposit','interest-rate','income','existing-expenses','insurance','fuel','maintenance','registration'];
+        for (var i = 0; i < fields.length; i++) {
+          var raw = value(fields[i]), num = amount(fields[i]);
+          if (raw === '' || !Number.isFinite(num)) return showError('Enter a number in every required field.');
+          if (num < 0) return showError('Amounts and the interest rate cannot be negative.');
+          if (num > MAX) return showError('Please enter amounts no larger than $1,000,000,000,000.');
+        }
+        var carPrice = amount('car-price'), savings = amount('current-savings'), deposit = amount('deposit'), rate = amount('interest-rate'), income = amount('income'), existing = amount('existing-expenses');
+        var term = Number(value('loan-term'));
+        if (!(carPrice > 0)) return showError('Enter a car price greater than $0.');
+        if (!(income > 0)) return showError('Enter income greater than $0.');
+        if (![1,2,3,4,5,6,7].includes(term)) return showError('Choose a valid loan term from 1 to 7 years.');
+        if (deposit > carPrice) return showError('The deposit cannot exceed the car price.');
+        if (deposit > savings) return showError('The deposit cannot exceed current savings.');
+        var loan = carPrice - deposit, payments = term * 12, monthlyRate = rate / 100 / 12, repayment;
+        if (monthlyRate === 0) repayment = loan / payments;
+        else { var factor = Math.pow(1 + monthlyRate, payments); repayment = loan * monthlyRate * factor / (factor - 1); }
+        var incomeMonthly = monthly(income, value('income-frequency')), expensesMonthly = monthly(existing, value('expenses-frequency'));
+        var insurance = amount('insurance'), fuel = amount('fuel'), maintenance = amount('maintenance'), registration = amount('registration');
+        var running = insurance + fuel + maintenance + registration, totalMonthly = repayment + running, remaining = incomeMonthly - expensesMonthly - totalMonthly;
+        var totalRepayments = repayment * payments, interest = totalRepayments - loan, totalCarCost = totalRepayments + running * payments;
+        var numbers = [loan, repayment, insurance, fuel, maintenance, registration, totalMonthly, incomeMonthly, expensesMonthly, remaining, totalRepayments, interest, totalCarCost];
+        if (numbers.some(function (n) { return !Number.isFinite(n); })) return showError('Those values are too large to calculate safely. Try smaller amounts.');
+        var message = remaining > 0 ? 'Based on the figures entered, your income exceeds your listed expenses and estimated car costs by approximately ' + dollars(remaining) + ' per month.' : remaining < 0 ? 'Based on the figures entered, your listed expenses and estimated car costs exceed your income by approximately ' + dollars(Math.abs(remaining)) + ' per month.' : 'Based on the figures entered, your listed income and expenses leave approximately $0 per month after the estimated car costs.';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Estimated car costs</h2><dl class="result-list">' +
+          '<div><dt>Estimated loan amount</dt><dd>' + dollars(loan) + '</dd></div>' +
+          '<div><dt>Estimated monthly loan repayment</dt><dd>' + dollars(repayment) + '</dd></div>' +
+          '<div><dt>Estimated monthly insurance</dt><dd>' + dollars(insurance) + '</dd></div>' +
+          '<div><dt>Estimated monthly fuel</dt><dd>' + dollars(fuel) + '</dd></div>' +
+          '<div><dt>Estimated monthly maintenance</dt><dd>' + dollars(maintenance) + '</dd></div>' +
+          '<div><dt>Estimated monthly registration/other costs</dt><dd>' + dollars(registration) + '</dd></div>' +
+          '<div><dt>Total estimated monthly car cost</dt><dd>' + dollars(totalMonthly) + '</dd></div>' +
+          '<div><dt>Estimated monthly income</dt><dd>' + dollars(incomeMonthly) + '</dd></div>' +
+          '<div><dt>Existing monthly expenses</dt><dd>' + dollars(expensesMonthly) + '</dd></div>' +
+          '<div><dt>Estimated money remaining after expenses and car costs</dt><dd>' + dollars(remaining) + '</dd></div>' +
+          '<div><dt>Total estimated loan repayments</dt><dd>' + dollars(totalRepayments) + '</dd></div>' +
+          '<div><dt>Estimated interest paid</dt><dd>' + dollars(Math.max(0, interest)) + '</dd></div></dl>' +
+          '<div class="result-message' + (remaining < 0 ? ' negative' : '') + '">' + message + '</div>' +
+          '<div class="breakdown"><h3>Monthly car cost breakdown</h3><p>Loan repayment ' + dollars(repayment) + ' + insurance ' + dollars(insurance) + ' + fuel ' + dollars(fuel) + ' + maintenance ' + dollars(maintenance) + ' + registration/other ' + dollars(registration) + ' = <strong>' + dollars(totalMonthly) + ' per month</strong>.</p><p>Total estimated car-related cost over the loan: <strong>' + dollars(totalCarCost) + '</strong>.</p></div>' +
+          '<p class="car-disclaimer">All results are estimates based on your inputs.</p></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

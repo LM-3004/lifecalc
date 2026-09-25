@@ -1,1 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rent Affordability Calculator | LifeCalc</title>
+  <meta name="description" content="Use this rent affordability calculator to estimate how much rent you can afford from your income, expenses, housing costs and savings goals.">
+  <link rel="canonical" href="https://lm-3004.github.io/lifecalc/rent.html">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #rent-form input, #rent-form select { box-sizing: border-box; width: 100%; min-height: 48px; padding: 10px 12px; line-height: 1.25; font-size: 16px; }
+    #rent-form .input-prefix, #rent-form .input-with-select { display: flex; align-items: stretch; }
+    #rent-form .input-prefix span { display: flex; align-items: center; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 10px 0 0 10px; color: var(--muted); background: var(--paper); }
+    #rent-form .input-prefix input { min-width: 0; border-radius: 0 10px 10px 0; }
+    #rent-form .form-help { margin-top: -.5rem; }
+    .rent-disclaimer { margin-top: 1rem; color: var(--muted); font-size: .95rem; }
+    .result-list { display: grid; gap: .65rem; margin: 1.25rem 0; }
+    .result-list div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .65rem; border-bottom: 1px solid var(--line); }
+    .result-list dt { color: var(--muted); }
+    .result-list dd { margin: 0; font-weight: 700; text-align: right; }
+    .result-message { padding: 1rem; border-radius: 12px; background: var(--soft); line-height: 1.5; }
+    .result-message.negative { background: var(--warn); color: var(--warn-ink); }
+    .comparison { margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+    .comparison h3 { margin: 0 0 .65rem; font-size: 1rem; }
+    .comparison p { margin: 0 0 .75rem; color: var(--muted); }
+    .comparison ul { display: grid; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+    .comparison li { display: flex; justify-content: space-between; gap: 1rem; }
+    @media (max-width: 600px) {
+      #rent-form input, #rent-form select { min-height: 50px; }
+      .result-list div, .comparison li { align-items: baseline; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div class="container nav-wrap">
+    <a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="calculator.html">Can I Afford It?</a><a href="savings.html">Savings Goal</a><a href="car.html">Car Calculator</a><a href="rent.html" aria-current="page">Rent Calculator</a><a href="about.html">About</a>
+    </nav>
+  </div></header>
 
+  <main>
+    <section class="page-intro container">
+      <p class="eyebrow">Housing calculator</p>
+      <h1>Rent Affordability Calculator</h1>
+      <p>Estimate how much rent you can afford based on your income, regular expenses, housing costs and desired savings. This affordable rent calculator presents the figures you enter without giving financial advice.</p>
+    </section>
+
+    <section class="container calculator-layout">
+      <form id="rent-form" class="calculator-card" novalidate>
+        <div class="form-section"><h2>Your income</h2><div class="form-grid">
+          <div class="field"><label for="income">Income amount</label><div class="input-with-select"><input id="income" name="income" type="number" min="0.01" step="0.01" inputmode="decimal" required><select id="income-frequency" name="incomeFrequency" aria-label="Income frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></div></div>
+        </div></div>
+        <div class="form-section"><h2>Monthly costs and goals</h2><p class="form-help">Enter these amounts as monthly figures. Optional fields can be left blank.</p><div class="form-grid">
+          <div class="field"><label for="expenses">Other monthly expenses</label><div class="input-prefix"><span>$</span><input id="expenses" name="expenses" type="number" min="0" step="0.01" inputmode="decimal"></div></div>
+          <div class="field"><label for="current-rent">Current rent <span class="muted">(optional)</span></label><div class="input-prefix"><span>$</span><input id="current-rent" name="currentRent" type="number" min="0" step="0.01" inputmode="decimal"></div></div>
+          <div class="field"><label for="housing-costs">Other housing costs per month <span class="muted">(optional)</span></label><div class="input-prefix"><span>$</span><input id="housing-costs" name="housingCosts" type="number" min="0" step="0.01" inputmode="decimal"></div></div>
+          <div class="field"><label for="savings">Desired savings per month <span class="muted">(optional)</span></label><div class="input-prefix"><span>$</span><input id="savings" name="savings" type="number" min="0" step="0.01" inputmode="decimal"></div></div>
+        </div></div>
+        <div class="form-section"><h2>Proposed rent</h2><div class="form-grid">
+          <div class="field"><label for="proposed-rent">Proposed rent</label><div class="input-with-select"><input id="proposed-rent" name="proposedRent" type="number" min="0.01" step="0.01" inputmode="decimal" required><select id="rent-frequency" name="rentFrequency" aria-label="Proposed rent frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option></select></div></div>
+        </div></div>
+        <p id="rent-form-error" class="form-error" role="alert" hidden></p>
+        <button class="button button-primary" type="submit">Calculate rent estimate <span aria-hidden="true">→</span></button>
+        <p class="rent-disclaimer">Estimates are based on the information you enter and are for general informational purposes only. They are not financial advice. Your actual housing costs and financial circumstances may vary.</p>
+      </form>
+
+      <section id="rent-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form to see monthly rent, commitments and remaining-money figures.</p></div></section>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var form = document.getElementById('rent-form');
+      var error = document.getElementById('rent-form-error');
+      var results = document.getElementById('rent-results');
+      var money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var number = new Intl.NumberFormat('en-AU', { maximumFractionDigits: 2 });
+
+      function raw(id) { return document.getElementById(id).value.trim(); }
+      function amount(id) { return Number(raw(id)); }
+      function dollars(value) { return money.format(Number.isFinite(value) ? value : 0); }
+      function monthly(value, frequency) {
+        return frequency === 'weekly' ? value * 52 / 12 : frequency === 'fortnightly' ? value * 26 / 12 : frequency === 'yearly' ? value / 12 : value;
+      }
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+        results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
+      }
+      function calculate(event) {
+        event.preventDefault();
+        error.hidden = true;
+        var income = amount('income'), proposed = amount('proposed-rent');
+        var expenses = raw('expenses') === '' ? 0 : amount('expenses');
+        var currentRent = raw('current-rent') === '' ? 0 : amount('current-rent');
+        var housing = raw('housing-costs') === '' ? 0 : amount('housing-costs');
+        var savings = raw('savings') === '' ? 0 : amount('savings');
+        var optional = [expenses, currentRent, housing, savings];
+        if (raw('income') === '' || !Number.isFinite(income) || income <= 0) return showError('Enter an income amount greater than $0.');
+        if (raw('proposed-rent') === '' || !Number.isFinite(proposed) || proposed <= 0) return showError('Enter a proposed rent amount greater than $0.');
+        if (optional.some(function (value) { return !Number.isFinite(value) || value < 0; })) return showError('Other expenses, rent, housing costs and savings must be $0 or more.');
+
+        var incomeMonthly = monthly(income, document.getElementById('income-frequency').value);
+        var rentMonthly = monthly(proposed, document.getElementById('rent-frequency').value);
+        var commitments = rentMonthly + expenses + housing + savings;
+        var remaining = incomeMonthly - commitments;
+        var rentPercent = incomeMonthly > 0 ? rentMonthly / incomeMonthly * 100 : 0;
+        var values = [incomeMonthly, rentMonthly, expenses, currentRent, housing, savings, commitments, remaining, rentPercent];
+        if (values.some(function (value) { return !Number.isFinite(value); })) return showError('Those values are too large to calculate safely. Try smaller amounts.');
+
+        var message = remaining > 0.005 ? 'Based on the figures entered, you would have approximately ' + dollars(remaining) + ' remaining each month after the listed costs and desired savings.' : remaining < -0.005 ? 'Based on the figures entered, your listed costs and desired savings exceed your monthly income by approximately ' + dollars(Math.abs(remaining)) + '.' : 'Based on the figures entered, your listed costs and desired savings would use approximately all of your monthly income.';
+        var scenarioAdjustments = [-50, -100, 50, 100];
+        var scenarios = scenarioAdjustments.map(function (adjustment) {
+          var scenarioRent = proposed + adjustment;
+          var scenarioRemaining = incomeMonthly - (monthly(scenarioRent, 'weekly') + expenses + housing + savings);
+          return '<li><span>' + (adjustment < 0 ? '$' + Math.abs(adjustment) + '/week lower' : '$' + adjustment + '/week higher') + '</span><strong>' + (scenarioRent > 0 ? dollars(scenarioRemaining) : 'Not available') + ' remaining</strong></li>';
+        }).join('');
+
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Monthly rent overview</h2><dl class="result-list">' +
+          '<div><dt>Monthly income</dt><dd>' + dollars(incomeMonthly) + '</dd></div>' +
+          '<div><dt>Proposed monthly rent</dt><dd>' + dollars(rentMonthly) + '</dd></div>' +
+          '<div><dt>Other monthly expenses</dt><dd>' + dollars(expenses) + '</dd></div>' +
+          '<div><dt>Other housing costs</dt><dd>' + dollars(housing) + '</dd></div>' +
+          '<div><dt>Desired monthly savings</dt><dd>' + dollars(savings) + '</dd></div>' +
+          '<div><dt>Total monthly commitments</dt><dd>' + dollars(commitments) + '</dd></div>' +
+          '<div><dt>Money remaining after listed costs and savings</dt><dd>' + dollars(remaining) + '</dd></div>' +
+          '<div><dt>Rent as a percentage of monthly income</dt><dd>' + number.format(rentPercent) + '%</dd></div>' +
+          (currentRent > 0 ? '<div><dt>Current rent (not included above)</dt><dd>' + dollars(currentRent) + '</dd></div>' : '') +
+          '</dl><div class="result-message' + (remaining < 0 ? ' negative' : '') + '">' + message + '</div>' +
+          '<div class="comparison"><h3>Weekly rent comparison</h3><p>Each scenario is calculated independently from the proposed rent.</p><ul>' + scenarios + '</ul></div>' +
+          '<p class="rent-disclaimer">Rent represents approximately ' + number.format(rentPercent) + '% of your monthly income.</p></div>';
+      }
+      form.addEventListener('submit', calculate);
+    }());
+  </script>
+</body>
+</html>

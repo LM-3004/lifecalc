@@ -34,10 +34,19 @@
     .comparison{margin-top:1.5rem}.comparison h2{margin-bottom:1rem}
     .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .comparison-card{padding:1.15rem}.comparison-card h3{margin:.1rem 0 1rem;font-size:1.05rem}
-    .comparison-card dl{margin:0;display:grid;gap:.65rem}.comparison-card dl div{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--line,#dce6e1);padding-bottom:.5rem}.comparison-card dl div:last-child{border-bottom:0}.comparison-card dt{color:var(--muted,#60706a)}.comparison-card dd{margin:0;text-align:right;font-weight:700}
+    .comparison-card dl{margin:0;display:grid;gap:.65rem}.comparison-card dl div{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--line,#dce6e1);padding-bottom:.5rem}
+    .comparison-card dt{color:var(--muted,#60706a)}
+    .comparison-card dd{margin:0;font-weight:700}
     .comparison-note{margin:1rem 0 0;color:var(--muted,#60706a);line-height:1.5}
     .debt-content{max-width:760px;margin:2rem auto}.debt-content h2{margin-top:1.5rem}
-    @media(max-width:760px){.debt-layout,.comparison-grid{grid-template-columns:1fr}.debt-form-grid{grid-template-columns:1fr}.debt-field.full{grid-column:auto}.result-grid{grid-template-columns:1fr 1fr}}
+    .guide-section{margin:3rem auto;max-width:760px}
+    .guide-section h2{margin-top:0}
+    .guide-section ul{padding-left:1.2rem;margin:1rem 0}
+    .guide-section li + li{margin-top:.4rem}
+    .guide-example{background:var(--soft,#e8f4ef);border:1px solid var(--line,#dce6e1);border-radius:12px;padding:1.25rem;margin:1rem 0}
+    .guide-example p{margin-top:0}
+    .guide-example p + p{margin-top:1rem}
+    @media(max-width:760px){.debt-layout,.comparison-grid{grid-template-columns:1fr}.debt-form-grid{grid-template-columns:1fr}.debt-field.full{grid-column:auto}.result-grid{grid-template-columns:1fr}.guide-section{margin:2rem auto}}
     @media(max-width:380px){.result-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -59,7 +68,7 @@
       <form id="debt-form" class="debt-card" novalidate>
         <h2>Your debt details</h2>
         <div class="debt-form-grid">
-          <div class="debt-field full"><label for="balance">Current debt balance</label><div class="debt-input"><span aria-hidden="true">$</span><input id="balance" name="balance" type="number" min="0.01" step="0.01" inputmode="decimal" required aria-describedby="balance-help"></div><p id="balance-help" class="debt-help">Enter the amount you still owe.</p></div>
+          <div class="debt-field full"><label for="balance">Current debt balance</label><div class="debt-input"><span aria-hidden="true">$</span><input id="balance" name="balance" type="number" min="0.01" step="0.01" inputmode="decimal" required></div></div>
           <div class="debt-field"><label for="rate">Annual interest rate (%)</label><input id="rate" name="rate" type="number" min="0" step="0.01" inputmode="decimal" required></div>
           <div class="debt-field"><label for="payment">Current payment amount</label><div class="debt-input"><span aria-hidden="true">$</span><input id="payment" name="payment" type="number" min="0.01" step="0.01" inputmode="decimal" required></div></div>
           <div class="debt-field"><label for="payment-frequency">Payment frequency</label><select id="payment-frequency" name="payment-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option></select></div>
@@ -79,9 +88,69 @@
       <div class="comparison-grid"><article class="comparison-card"><h3>Current payment only</h3><div id="current-scenario"></div></article><article class="comparison-card"><h3>Current payment + extra payment</h3><div id="extra-scenario"></div></article></div>
       <p id="comparison-note" class="comparison-note"></p>
     </section>
-    <section class="container debt-content"><p class="eyebrow">How it works</p><h2>Plan your debt repayment</h2><p>A debt payoff calculator estimates how long it may take to repay a debt based on your balance, interest rate and payment amount. Adding extra payments can reduce the estimated repayment time and total interest paid.</p><p><strong>Disclaimer:</strong> This calculator provides estimates based on the information you enter. Actual repayment amounts and timelines may vary depending on your lender, interest calculations, fees, payment timing and other factors. This is for general informational purposes only and is not financial advice.</p></section>
+    <section class="container debt-content"><p class="eyebrow">How it works</p><h2>Plan your debt repayment</h2><p>A debt payoff calculator estimates how long it may take to repay a debt based on your balance, interest rate, and payment amount. It can also compare your current payment with an extra payment scenario so you can see how much a higher payment might reduce the total interest.</p></section>
+
+    <section class="container guide-section">
+      <h2>How to Use the Debt Payoff Calculator</h2>
+      <p>This debt repayment calculator is designed to help you estimate your payoff timeline with the details you enter. Follow these steps:</p>
+      <ul>
+        <li><strong>Current debt balance</strong> – Enter the outstanding amount you still owe.</li>
+        <li><strong>Annual interest rate</strong> – Add the interest rate applied to the debt, such as a credit card or personal loan rate.</li>
+        <li><strong>Current payment</strong> – Enter your regular payment amount.</li>
+        <li><strong>Payment frequency</strong> – Choose how often you make that payment, such as weekly, fortnightly, or monthly.</li>
+        <li><strong>Extra payment</strong> – If you can pay more than your regular amount, enter the extra amount here.</li>
+        <li><strong>Extra payment frequency</strong> – Select how often that extra payment is made.</li>
+      </ul>
+      <p>Once you submit the form, the calculator compares the current repayment scenario with the extra payment scenario to estimate how long it may take to pay off the debt and how much interest may be payable.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How Does the Debt Payoff Calculator Work?</h2>
+      <p>The debt payoff calculator uses the information you enter to estimate a repayment plan. It converts your regular payment and extra payment into a monthly amount so it can compare the scenarios consistently.</p>
+      <ul>
+        <li><strong>Payments converted to a monthly amount</strong> – Weekly and fortnightly payments are converted into an equivalent monthly amount so the repayment plan can be estimated on a consistent basis.</li>
+        <li><strong>Interest rate effect</strong> – A higher annual interest rate increases the proportion of each payment that goes to interest, which can extend the time needed to pay off the debt.</li>
+        <li><strong>Estimated payoff time</strong> – The calculator estimates how many months it would take to eliminate the debt balance with the current payment and with the extra payment scenario.</li>
+        <li><strong>Total payments and interest</strong> – The estimates include the total amount paid and the estimated interest charged over the life of the debt.</li>
+        <li><strong>Extra payment comparison</strong> – The calculator compares your current payment against a scenario where you add an extra payment, helping show how that additional amount can affect the payoff time and interest paid.</li>
+      </ul>
+      <p>Because loan terms and lender rules vary, these results are estimates rather than guaranteed repayment schedules.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Debt Payoff Example</h2>
+      <p>Here's a simple example using the debt payoff calculator:</p>
+      <div class="guide-example">
+        <p><strong>Example values:</strong></p>
+        <p>Debt balance: $10,000<br>Annual interest rate: 10%<br>Current payment: $300 per month<br>Extra payment: $50 per month</p>
+        <p>In this example, the calculator compares the current payment scenario with the scenario where an additional $50 is paid each month. It estimates how the extra payment changes the estimated payoff time and the total interest paid. Depending on the debt terms, the extra payment may reduce the amount of interest and shorten the debt payoff time.</p>
+      </div>
+    </section>
+
+    <section class="container guide-section">
+      <h2>What Does Extra Payment Mean?</h2>
+      <p>The extra payment is an additional amount you choose to add on top of your current payment. In this debt payoff calculator, the extra payment is entered separately so you can compare two repayment scenarios:</p>
+      <ul>
+        <li>Your current payment only.</li>
+        <li>Your current payment plus the extra amount you choose.</li>
+      </ul>
+      <p>The calculator then estimates how that extra payment changes the projected debt payoff time and the interest that may be paid. The key point is that a higher repayment amount can reduce how long it takes to pay off debt, but actual results still depend on the terms of the debt and lender calculations.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Important Note</h2>
+      <p>This debt payoff calculator provides estimates based on the information entered. Actual debt repayment results can vary depending on:</p>
+      <ul>
+        <li>Interest calculation methods used by the lender.</li>
+        <li>Any fees, charges or penalties charged on the account.</li>
+        <li>Payment timing and when interest is applied.</li>
+        <li>Lender rules, account terms and repayment conditions.</li>
+        <li>Changes in rates or payment amounts over time.</li>
+      </ul>
+      <p>These figures are estimates for planning and comparison purposes only. The debt payoff calculator is a helpful debt interest calculator for understanding potential repayment scenarios, but it is not a guarantee of actual lender outcomes.</p>
+    </section>
   </main>
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -94,7 +163,7 @@
       const number = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
       const monthlyAmount = (amount, frequency) => amount * ({ weekly: 52 / 12, fortnightly: 26 / 12, monthly: 1 }[frequency]);
       const money = value => currency.format(Math.max(0, value));
-      const time = months => { const rounded = Math.max(1, Math.ceil(months)); const years = Math.floor(rounded / 12); const remaining = rounded % 12; return years ? years + ' year' + (years === 1 ? '' : 's') + (remaining ? ' ' + remaining + ' month' + (remaining === 1 ? '' : 's') : '') : remaining + ' month' + (remaining === 1 ? '' : 's'); };
+      const time = months => { const rounded = Math.max(1, Math.ceil(months)); const years = Math.floor(rounded / 12); const remaining = rounded % 12; return years ? years + ' year' + (years === 1 ? '' : 's') + (remaining ? ' ' + remaining + ' month' + (remaining === 1 ? '' : 's') : '') : rounded + ' month' + (rounded === 1 ? '' : 's'); };
       function scenario(balance, rate, monthlyPayment) {
         const monthlyInterest = balance * (rate / 100 / 12);
         if (!Number.isFinite(monthlyPayment) || monthlyPayment <= monthlyInterest) return null;
@@ -127,9 +196,9 @@
         const withExtra = scenario(balance, rate, regularMonthly + extraMonthly);
         const monthlyInterest = balance * (rate / 100 / 12);
         if (!withExtra) {
-          results.innerHTML = '<h2>Your estimate</h2><div class="debt-warning">Your current payment is not high enough to pay off this debt at the entered interest rate. Increase your payment or add an extra payment.</div><p class="debt-help">At the current balance, the estimated monthly interest is ' + money(monthlyInterest) + '.</p>';
+          results.innerHTML = '<h2>Your estimate</h2><div class="debt-warning">Your current payment is not high enough to pay off this debt at the entered interest rate. Increase your payment or reduce your balance to estimate a payoff plan.</div>';
         } else {
-          results.innerHTML = '<h2>Your estimate</h2><div class="result-grid"><div class="result-item"><span class="result-label">Total monthly payment</span><strong>' + money(regularMonthly + extraMonthly) + '</strong></div><div class="result-item"><span class="result-label">Estimated payoff time</span><strong>' + time(withExtra.months) + '</strong></div><div class="result-item"><span class="result-label">Estimated total amount paid</span><strong>' + money(withExtra.totalPaid) + '</strong></div><div class="result-item"><span class="result-label">Estimated total interest</span><strong>' + money(withExtra.interest) + '</strong></div></div>' + (!current ? '<div class="debt-warning">Your current payment is not high enough to pay off this debt at the entered interest rate, but the extra payment makes repayment possible.</div>' : '') + '<p class="debt-help">Estimated payoff time: ' + number.format(withExtra.months) + ' months (' + time(withExtra.months) + ').</p>';
+          results.innerHTML = '<h2>Your estimate</h2><div class="result-grid"><div class="result-item"><span class="result-label">Current monthly payment</span><strong>' + money(regularMonthly) + '</strong></div><div class="result-item"><span class="result-label">Monthly payment with extra</span><strong>' + money(regularMonthly + extraMonthly) + '</strong></div></div><div class="result-item"><span class="result-label">Estimated payoff time</span><strong>' + time(withExtra.months) + '</strong></div>';
         }
         document.getElementById('current-scenario').innerHTML = scenarioMarkup(current);
         document.getElementById('extra-scenario').innerHTML = scenarioMarkup(withExtra);

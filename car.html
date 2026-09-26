@@ -32,7 +32,7 @@
       .result-list div { align-items: baseline; }
     }
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Car Affordability Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/car.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Car Affordability Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/car.html","description":"Calculate how much car you can afford based on loan, income, and ongoing car costs"}</script>
 </head>
 <body>
   <header class="site-header"><div class="container nav-wrap">
@@ -53,35 +53,112 @@
     <section class="container calculator-layout">
       <form id="car-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Car and loan details</h2><div class="form-grid">
-          <div class="field"><label for="car-price">Car price</label><div class="input-prefix"><span>$</span><input id="car-price" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="deposit">Deposit</label><div class="input-prefix"><span>$</span><input id="deposit" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="car-price">Car price</label><div class="input-prefix"><span>$</span><input id="car-price" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="deposit">Deposit</label><div class="input-prefix"><span>$</span><input id="deposit" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
           <div class="field"><label for="loan-term">Loan term</label><select id="loan-term" required><option value="" selected disabled>Select a term</option><option value="1">1 year</option><option value="2">2 years</option><option value="3">3 years</option><option value="4">4 years</option><option value="5">5 years</option><option value="6">6 years</option><option value="7">7 years</option></select></div>
-          <div class="field"><label for="interest-rate">Interest rate</label><div class="input-with-select"><input id="interest-rate" type="number" min="0" max="1000" step="0.01" inputmode="decimal" required><span class="input-suffix">%</span></div></div>
+          <div class="field"><label for="interest-rate">Interest rate</label><div class="input-with-select"><input id="interest-rate" type="number" min="0" max="1000" step="0.01" inputmode="decimal" placeholder="0.00" required><select id="interest-rate-unit"><option value="percent">%</option></select></div></div>
         </div></div>
 
         <div class="form-section"><h2>Income and existing expenses</h2><div class="form-grid">
-          <div class="field"><label for="income">Income</label><div class="input-with-select"><input id="income" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" required><select id="income-frequency" aria-label="Income frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
-          <div class="field"><label for="existing-expenses">Existing expenses</label><div class="input-with-select"><input id="existing-expenses" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required><select id="expenses-frequency" aria-label="Existing expenses frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
+          <div class="field"><label for="income">Income</label><div class="input-with-select"><input id="income" type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required><select id="income-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
+          <div class="field"><label for="existing-expenses">Existing expenses</label><div class="input-with-select"><input id="existing-expenses" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required><select id="expenses-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div></div>
         </div></div>
 
         <div class="form-section"><h2>Ongoing monthly car costs</h2><p class="form-help">Enter each amount as a monthly estimate.</p><div class="form-grid">
-          <div class="field"><label for="insurance">Insurance</label><div class="input-prefix"><span>$</span><input id="insurance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="fuel">Fuel</label><div class="input-prefix"><span>$</span><input id="fuel" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="maintenance">Maintenance/servicing</label><div class="input-prefix"><span>$</span><input id="maintenance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="registration">Registration and other car costs</label><div class="input-prefix"><span>$</span><input id="registration" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" required></div></div>
+          <div class="field"><label for="insurance">Insurance</label><div class="input-prefix"><span>$</span><input id="insurance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="fuel">Fuel</label><div class="input-prefix"><span>$</span><input id="fuel" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="maintenance">Maintenance/servicing</label><div class="input-prefix"><span>$</span><input id="maintenance" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="registration">Registration and other car costs</label><div class="input-prefix"><span>$</span><input id="registration" type="number" min="0" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
         </div></div>
         <p id="car-form-error" class="form-error" role="alert" hidden></p>
         <button class="button button-primary" type="submit">Calculate car costs <span aria-hidden="true">→</span></button>
-        <p class="car-disclaimer">Estimates are based on the information you enter and are for general informational purposes only. They are not financial advice. Actual loan rates, repayments and vehicle costs may vary.</p>
+        <p class="car-disclaimer">Estimates are based on the information you enter and are for general informational purposes only. They are not financial advice. Actual loan rates, repayments and costs will vary.</p>
       </form>
 
       <section id="car-results" class="results-card" aria-live="polite" aria-atomic="true">
         <div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form to see estimated loan, monthly car and remaining-money figures.</p></div>
       </section>
     </section>
+
+    <!-- New content sections for SEO and user guidance -->
+    <section class="container content-section">
+      <h2>How to Use the Car Affordability Calculator</h2>
+      <p>This car loan calculator helps you understand the total cost of buying a car and whether it fits your budget. Here's how to use it step by step:</p>
+      <ul>
+        <li><strong>Enter the car price:</strong> Input the total cost of the vehicle you're considering.</li>
+        <li><strong>Add your current savings:</strong> Enter how much money you currently have available.</li>
+        <li><strong>Set your deposit:</strong> Enter how much of your savings you plan to use as an upfront deposit on the car.</li>
+        <li><strong>Choose a loan term:</strong> Select the length of your car loan, from 1 to 7 years. A longer term means smaller monthly payments but more total interest.</li>
+        <li><strong>Enter the interest rate:</strong> Input the annual interest rate you expect on your car loan.</li>
+        <li><strong>Add your income:</strong> Enter your regular income and select the frequency (weekly, fortnightly, monthly, or yearly).</li>
+        <li><strong>List existing expenses:</strong> Enter your current monthly expenses and their frequency so the calculator can see what you have left for the car.</li>
+        <li><strong>Add ongoing car costs:</strong> Enter your estimated monthly costs for insurance, fuel, maintenance/servicing, and registration or other car-related expenses.</li>
+        <li><strong>Review your results:</strong> The calculator will show your estimated loan amount, monthly repayment, total car costs, and money remaining after all expenses.</li>
+      </ul>
+    </section>
+
+    <section class="container content-section">
+      <h2>How Does the Car Affordability Calculator Work?</h2>
+      <p>Understanding how this monthly car cost calculator works helps you see the full picture of car ownership:</p>
+      <ul>
+        <li><strong>Calculate the loan amount:</strong> The estimated loan is the car price minus your deposit. For example, a $30,000 car with a $5,000 deposit results in a $25,000 loan.</li>
+        <li><strong>Estimate monthly loan repayment:</strong> The calculator uses your loan amount, interest rate, and loan term to estimate your monthly payment using a standard loan repayment formula. This accounts for the interest you'll pay over the life of the loan.</li>
+        <li><strong>Include ongoing car costs:</strong> Your monthly insurance, fuel, maintenance, and registration costs are added to your loan repayment to show your total monthly car cost.</li>
+        <li><strong>Factor in existing expenses:</strong> The calculator converts your existing expenses to a monthly amount (whether you entered them weekly, fortnightly, monthly, or yearly) and subtracts them from your income.</li>
+        <li><strong>Calculate money remaining:</strong> Your estimated monthly income minus your existing expenses and total car costs shows how much money you'd have left each month.</li>
+        <li><strong>Show total interest paid:</strong> The calculator also displays the total interest you'll pay over the life of the loan, which is the difference between all your repayments and the original loan amount.</li>
+      </ul>
+    </section>
+
+    <section class="container content-section">
+      <h2>Car Affordability Example</h2>
+      <p>Here's an example using this car payment calculator to understand the calculation:</p>
+      <ul>
+        <li>Car price: $30,000</li>
+        <li>Current savings: $10,000</li>
+        <li>Deposit: $5,000</li>
+        <li>Loan term: 5 years (60 months)</li>
+        <li>Interest rate: 7%</li>
+        <li>Income: $1,000 per week</li>
+        <li>Existing expenses: $400 per month</li>
+        <li>Insurance: $150 per month</li>
+        <li>Fuel: $200 per month</li>
+        <li>Maintenance: $100 per month</li>
+        <li>Registration/other: $50 per month</li>
+      </ul>
+      <p><strong>The calculation:</strong> The estimated loan amount is $25,000 ($30,000 – $5,000 deposit). With a 7% interest rate over 5 years, the estimated monthly loan repayment would be approximately $495.03.</p>
+      <p>The total monthly car cost would be approximately $995.03 ($495.03 loan + $150 insurance + $200 fuel + $100 maintenance + $50 registration). Your monthly income is approximately $4,333, and your existing expenses are $400, leaving about $3,333. After subtracting the $995.03 car cost, you'd have approximately $2,338 per month remaining.</p>
+    </section>
+
+    <section class="container content-section">
+      <h2>What Costs Should I Consider When Buying a Car?</h2>
+      <p>Car ownership involves several types of ongoing costs beyond the purchase price and loan repayment. When thinking about how much car you can afford, it's important to budget for:</p>
+      <ul>
+        <li><strong>Loan repayments:</strong> Your monthly payment for financing the car purchase.</li>
+        <li><strong>Insurance:</strong> Mandatory or optional coverage depending on your situation and the loan terms.</li>
+        <li><strong>Fuel:</strong> Regular fuel costs, which vary based on fuel prices, how much you drive, and your vehicle's fuel efficiency.</li>
+        <li><strong>Maintenance and servicing:</strong> Regular oil changes, tire rotations, inspections, repairs, and other upkeep.</li>
+        <li><strong>Registration:</strong> Annual or periodic vehicle registration fees.</li>
+        <li><strong>Other costs:</strong> Roadside assistance, tolls, parking, vehicle inspection, or any other car-related expenses.</li>
+      </ul>
+      <p>All these costs add up and affect your monthly budget. Using this car affordability calculator helps you see the complete picture of what a purchase might cost each month.</p>
+    </section>
+
+    <section class="container content-section">
+      <h2>Important Note</h2>
+      <p>This car payment calculator provides estimates based on the information you enter. The actual costs and figures may vary significantly from these estimates:</p>
+      <ul>
+        <li>Loan repayments depend on your actual approved interest rate, which varies by lender, your credit history, and market conditions.</li>
+        <li>Insurance costs vary based on your age, driving history, location, the specific car model, and your coverage choices.</li>
+        <li>Fuel costs fluctuate with fuel prices and depend on how much you drive and your vehicle's fuel efficiency.</li>
+        <li>Maintenance costs vary depending on the car's make and model, age, and condition.</li>
+        <li>Registration and other car-related fees vary by location and circumstance.</li>
+      </ul>
+      <p>Use this calculator as a planning tool to estimate your potential monthly costs and see how much car may fit within your budget. For specific loan quotes and actual costs, consult with lenders and insurance providers.</p>
+    </section>
   </main>
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="index.html">Home</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -121,7 +198,7 @@
         var totalRepayments = repayment * payments, interest = totalRepayments - loan, totalCarCost = totalRepayments + running * payments;
         var numbers = [loan, repayment, insurance, fuel, maintenance, registration, totalMonthly, incomeMonthly, expensesMonthly, remaining, totalRepayments, interest, totalCarCost];
         if (numbers.some(function (n) { return !Number.isFinite(n); })) return showError('Those values are too large to calculate safely. Try smaller amounts.');
-        var message = remaining > 0 ? 'Based on the figures entered, your income exceeds your listed expenses and estimated car costs by approximately ' + dollars(remaining) + ' per month.' : remaining < 0 ? 'Based on the figures entered, your listed expenses and estimated car costs exceed your income by approximately ' + dollars(Math.abs(remaining)) + ' per month.' : 'Based on the figures entered, your listed income and expenses leave approximately $0 per month after the estimated car costs.';
+        var message = remaining > 0 ? 'Based on the figures entered, your income exceeds your listed expenses and estimated car costs by approximately ' + dollars(remaining) + ' per month.' : 'Based on the figures entered, you would have approximately ' + dollars(Math.abs(remaining)) + ' short per month. This means the total costs would exceed your available income.';
         results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Estimated car costs</h2><dl class="result-list">' +
           '<div><dt>Estimated loan amount</dt><dd>' + dollars(loan) + '</dd></div>' +
           '<div><dt>Estimated monthly loan repayment</dt><dd>' + dollars(repayment) + '</dd></div>' +
@@ -136,7 +213,7 @@
           '<div><dt>Total estimated loan repayments</dt><dd>' + dollars(totalRepayments) + '</dd></div>' +
           '<div><dt>Estimated interest paid</dt><dd>' + dollars(Math.max(0, interest)) + '</dd></div></dl>' +
           '<div class="result-message' + (remaining < 0 ? ' negative' : '') + '">' + message + '</div>' +
-          '<div class="breakdown"><h3>Monthly car cost breakdown</h3><p>Loan repayment ' + dollars(repayment) + ' + insurance ' + dollars(insurance) + ' + fuel ' + dollars(fuel) + ' + maintenance ' + dollars(maintenance) + ' + registration/other ' + dollars(registration) + ' = <strong>' + dollars(totalMonthly) + ' per month</strong>.</p><p>Total estimated car-related cost over the loan: <strong>' + dollars(totalCarCost) + '</strong>.</p></div>' +
+          '<div class="breakdown"><h3>Monthly car cost breakdown</h3><p>Loan repayment ' + dollars(repayment) + ' + insurance ' + dollars(insurance) + ' + fuel ' + dollars(fuel) + ' + maintenance ' + dollars(maintenance) + ' + registration ' + dollars(registration) + ' = ' + dollars(totalMonthly) + ' per month</p></div>' +
           '<p class="car-disclaimer">All results are estimates based on your inputs.</p></div>';
       }
       form.addEventListener('submit', calculate);

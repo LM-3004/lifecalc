@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Savings Goal Calculator | LifeCalc</title>
-  <meta name="description" content="Use LifeCalc’s savings goal calculator to estimate how long it could take to reach your target and how much to save each week.">
+  <meta name="description" content="Use LifeCalc's savings goal calculator to estimate how long it could take to reach your target and how much to save each week.">
   <link rel="canonical" href="https://lm-3004.github.io/lifecalc/savings.html">
   <link rel="stylesheet" href="styles.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Goal Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/savings.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Goal Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/savings.html","description":"Calculate how long it will take to reach your savings goal based on your current savings and regular contributions"}</script>
   <style>
     /* Keep controls aligned consistently across browsers and on small screens. */
     #savings-form input,
@@ -45,20 +45,84 @@
     <section class="container calculator-layout">
       <form id="savings-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your savings goal</h2><div class="form-grid">
-          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" name="currentSavings" type="number" min="0" max="100000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="savings-goal">Savings goal</label><div class="input-prefix"><span>$</span><input id="savings-goal" name="savingsGoal" type="number" min="0.01" max="100000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="regular-saving">Amount you can save</label><div class="input-prefix"><span>$</span><input id="regular-saving" name="regularSaving" type="number" min="0" max="100000000" step="0.01" inputmode="decimal" required></div></div>
-          <div class="field"><label for="saving-frequency">Savings frequency</label><select id="saving-frequency" name="frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option></select></div>
-          <div class="field"><label for="target-date">Target date <span class="muted">(optional)</span></label><input id="target-date" name="targetDate" type="date" aria-describedby="target-date-help"><small id="target-date-help" class="muted">Leave blank to estimate a completion date.</small></div>
+          <div class="field"><label for="current-savings">Current savings</label><div class="input-prefix"><span>$</span><input id="current-savings" name="currentSavings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="savings-goal">Savings goal</label><div class="input-prefix"><span>$</span><input id="savings-goal" name="savingsGoal" type="number" min="0.01" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="regular-saving">Amount you can save</label><div class="input-prefix"><span>$</span><input id="regular-saving" name="regularSaving" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="saving-frequency">Savings frequency</label><select id="saving-frequency" name="frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option></select></div>
+          <div class="field"><label for="target-date">Target date <span class="muted">(optional)</span></label><input id="target-date" name="targetDate" type="date" aria-describedby="target-date-help"></div>
+          <p id="target-date-help" class="form-help">Leaving this blank calculates time based on your savings rate. Set a date to see how much you'd need to save weekly to reach your goal by that date.</p>
         </div></div>
         <p id="savings-form-error" class="form-error" role="alert" hidden></p>
         <button class="button button-primary" type="submit">Calculate savings goal <span aria-hidden="true">→</span></button>
       </form>
-      <section id="savings-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Enter your savings details to see your estimate.</p></div></section>
+      <section id="savings-results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form and click Calculate to see your results.</p></div></section>
     </section>
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>This savings target calculator converts your regular contribution into a weekly rate, then estimates the time needed to reach your goal.</p></section>
+
+    <!-- New content sections for SEO and user guidance -->
+    <section class="container content-section">
+      <h2>How to Use the Savings Goal Calculator</h2>
+      <p>This savings target calculator helps you understand how long it might take to reach your target amount. Here's how to use it:</p>
+      <ul>
+        <li><strong>Enter your current savings:</strong> Start by inputting how much money you currently have saved.</li>
+        <li><strong>Set your savings goal:</strong> Enter the total amount you want to save. This is your target.</li>
+        <li><strong>Add your regular savings amount:</strong> Input how much you can contribute to savings each period. This might be what you put aside weekly, fortnightly, or monthly.</li>
+        <li><strong>Choose your savings frequency:</strong> Select whether your contribution is weekly, fortnightly, or monthly. The calculator will convert this to a weekly rate for consistent calculations.</li>
+        <li><strong>Optional: Set a target date:</strong> If you want to reach your goal by a specific date, enter it here. The calculator will then show you how much you'd need to save weekly to meet that deadline.</li>
+        <li><strong>Review your results:</strong> The calculator will show how long it might take to reach your goal, plus scenarios for saving additional amounts like +$25 or +$50 per week.</li>
+      </ul>
+    </section>
+
+    <section class="container content-section">
+      <h2>How Does the Savings Goal Calculator Work?</h2>
+      <p>Understanding the calculation helps you see how your savings grow over time:</p>
+      <ul>
+        <li><strong>Calculate amount remaining:</strong> The calculator subtracts your current savings from your goal to determine how much more you need to save.</li>
+        <li><strong>Normalize to weekly savings:</strong> Whether you save weekly, fortnightly, or monthly, the calculator converts your regular contribution to a weekly amount. For example, $500 fortnightly becomes approximately $250 per week, and $1,000 monthly becomes approximately $231 per week.</li>
+        <li><strong>Estimate time to goal:</strong> The calculator divides the remaining amount by your weekly savings rate to estimate how many weeks it will take to reach your goal.</li>
+        <li><strong>Target date calculation:</strong> If you enter a target date, the calculator works backwards. It takes the remaining amount and the number of days until your target date to calculate how much you'd need to save weekly to hit that deadline.</li>
+        <li><strong>Scenario comparison:</strong> The calculator automatically shows what would happen if you saved an extra $25, $50, $100, or $200 per week. This helps you see how different savings rates affect your timeline.</li>
+      </ul>
+    </section>
+
+    <section class="container content-section">
+      <h2>Savings Goal Example</h2>
+      <p>Let's walk through a simple example using this savings goal calculator:</p>
+      <ul>
+        <li>Current savings: $0</li>
+        <li>Savings goal: $2,000</li>
+        <li>Amount to save: $500 fortnightly</li>
+      </ul>
+      <p><strong>The calculation:</strong> $500 fortnightly is approximately $250 per week. You need to save $2,000 (since you currently have $0). Dividing $2,000 by $250 gives you 8 weeks. So, at your current saving rate, it would take about <strong>8 weeks</strong> to reach your $2,000 goal.</p>
+      <p>The calculator would also show what happens if you increased your weekly savings by $25, $50, $100, or $200 — each option would reduce the time needed to reach your target.</p>
+    </section>
+
+    <section class="container content-section">
+      <h2>What If I Want to Reach My Goal Faster?</h2>
+      <p>The calculator includes alternative scenarios that show how much you could speed up reaching your goal:</p>
+      <ul>
+        <li>These scenarios add $25, $50, $100, or $200 to your weekly savings and show the new timeline for each option.</li>
+        <li>For example, if your base calculation shows 8 weeks, saving an extra $50 per week might reduce that to about 6 weeks.</li>
+        <li>These scenarios help you compare different options and see how changes in your savings rate affect when you'll reach your target.</li>
+      </ul>
+      <p>You can use this information to explore what might be realistic and achievable for your situation, but only you can decide what works best for your circumstances.</p>
+    </section>
+
+    <section class="container content-section">
+      <h2>Important Note</h2>
+      <p>This savings goal calculator provides an estimate based on the information you enter. It assumes your savings contributions and income remain consistent over time and does not account for:</p>
+      <ul>
+        <li>Changes to your income or expenses</li>
+        <li>Interest earned on your savings</li>
+        <li>Fees or withdrawals from your savings</li>
+        <li>Inflation or changes in the cost of living</li>
+        <li>Any other unexpected changes in your financial situation</li>
+      </ul>
+      <p>Use this how much do I need to save calculator as a planning tool to help you think through your financial goals. For more detailed financial planning, consider speaking with a financial professional who can take your complete situation into account.</p>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>This savings target calculator converts your regular contribution amount to a weekly rate, then divides how much you still need to save by that weekly amount to estimate your timeline. It's a simple way to see how your consistent savings could help you reach your goal.</p></section>
   </main>
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -88,7 +152,7 @@
       }
       function renderReached(remaining) {
         error.hidden = true;
-        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Goal already reached.</h2><p>You have ' + dollars(Math.abs(remaining)) + ' available toward this goal.</p></div>';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>Goal already reached.</h2><p>You have ' + dollars(Math.abs(remaining)) + ' available toward this goal. Consider increasing your savings target.</p></div>';
       }
       function calculate(event) {
         event.preventDefault();
@@ -127,7 +191,7 @@
           var scenarioWeeks = remaining / scenarioWeekly;
           return '<li><span>+$' + extra + '/week</span><strong>' + dollars(scenarioWeekly) + '/week · ' + formatDuration(scenarioWeeks) + '</strong></li>';
         }).join('');
-        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(remaining) + ' still needed</h2><div class="result-grid"><div><span>Weekly savings</span><strong>' + dollars(weekly) + '</strong></div><div><span>Estimated time</span><strong>' + formatDuration(weeks) + '</strong></div><div><span>Estimated completion</span><strong>' + dateFromDays(days) + '</strong></div></div>' + targetMessage + '<h3>Alternative scenarios</h3><ul class="scenario-list">' + scenarios + '</ul></div>';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(remaining) + ' still needed</h2><div class="result-grid"><div><span>Weekly savings</span><strong>' + dollars(weekly) + '/week</strong></div><div><span>Estimated time</span><strong>' + formatDuration(weeks) + '</strong></div><div><span>Approximate date</span><strong>' + dateFromDays(days) + '</strong></div></div>' + targetMessage + '<div><span>What if you saved more?</span><ul class="scenarios">' + scenarios + '</ul></div></div>';
       }
       form.addEventListener('submit', calculate);
     }());

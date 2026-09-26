@@ -13,7 +13,7 @@
     #salary-form input { box-sizing: border-box; width: 100%; min-height: 48px; font-size: 16px; }
     #salary-form .input-prefix { display: flex; align-items: stretch; }
     #salary-form .input-prefix input { flex: 1; min-width: 0; }
-    #salary-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 0.75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--soft, #e8f4ef); color: var(--muted, #60706a); }
+    #salary-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 0.75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--bg-raised, #f9faf9); }
     #salary-form .input-prefix input { border-radius: 0 10px 10px 0; }
     .salary-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .salary-results .result-highlight { margin-top: 1rem; }
@@ -23,11 +23,20 @@
     .salary-results .examples-list li:last-child { border-bottom: 0; }
     .salary-results .examples-list strong { text-align: right; }
     .salary-help { margin: 0.4rem 0 0; color: var(--muted, #60706a); font-size: 0.92rem; }
+    .guide-section { margin: 3rem 0; }
+    .guide-section h2 { margin-top: 0; }
+    .guide-example { background: var(--bg-raised, #f9faf9); border-radius: 10px; padding: 1.5rem; margin: 1rem 0; }
+    .guide-example dl { margin: 0; }
+    .guide-example dt { font-weight: 600; margin-top: 0.5rem; }
+    .guide-example dt:first-child { margin-top: 0; }
+    .guide-example dd { margin: 0.25rem 0 0; color: var(--muted, #60706a); }
     @media (max-width: 600px) {
       #salary-form input { min-height: 50px; font-size: 16px; }
       .salary-results .result-grid { grid-template-columns: 1fr; }
       .salary-results .examples-list li { align-items: flex-start; flex-direction: column; gap: 0.25rem; }
       .salary-results .examples-list strong { text-align: left; }
+      .guide-section { margin: 2rem 0; }
+      .guide-example { padding: 1.25rem; }
     }
   </style>
 </head>
@@ -50,11 +59,11 @@
     <section class="container calculator-layout">
       <form id="salary-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your work and income</h2><div class="form-grid">
-          <div class="field"><label for="hourly-wage">Hourly wage</label><div class="input-prefix"><span>$</span><input id="hourly-wage" name="hourlyWage" type="number" min="0.01" step="0.01" inputmode="decimal" value="30" aria-describedby="hourly-wage-help"></div><p class="salary-help" id="hourly-wage-help">Your standard hourly rate.</p></div>
-          <div class="field"><label for="regular-hours">Hours worked per week</label><input id="regular-hours" name="regularHours" type="number" min="0.01" max="168" step="0.01" inputmode="decimal" value="38"></div>
-          <div class="field"><label for="weeks-worked">Weeks worked per year</label><input id="weeks-worked" name="weeksWorked" type="number" min="0.01" max="52" step="0.01" inputmode="decimal" value="52"></div>
-          <div class="field"><label for="overtime-hours">Overtime hours per week</label><input id="overtime-hours" name="overtimeHours" type="number" min="0" step="0.01" inputmode="decimal" value="2"></div>
-          <div class="field"><label for="overtime-multiplier">Overtime multiplier</label><input id="overtime-multiplier" name="overtimeMultiplier" type="number" min="0.01" step="0.01" inputmode="decimal" value="1.5"><p class="salary-help">For example, 1.5 means time-and-a-half.</p></div>
+          <div class="field"><label for="hourly-wage">Hourly wage</label><div class="input-prefix"><span>$</span><input id="hourly-wage" name="hourlyWage" type="number" min="0.01" step="0.01" inputmode="decimal" value="30" required></div></div>
+          <div class="field"><label for="regular-hours">Hours worked per week</label><input id="regular-hours" name="regularHours" type="number" min="0.01" max="168" step="0.01" inputmode="decimal" value="38" required></div>
+          <div class="field"><label for="weeks-worked">Weeks worked per year</label><input id="weeks-worked" name="weeksWorked" type="number" min="0.01" max="52" step="0.01" inputmode="decimal" value="52" required></div>
+          <div class="field"><label for="overtime-hours">Overtime hours per week</label><input id="overtime-hours" name="overtimeHours" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div>
+          <div class="field"><label for="overtime-multiplier">Overtime multiplier</label><input id="overtime-multiplier" name="overtimeMultiplier" type="number" min="0.01" step="0.01" inputmode="decimal" value="1.5"></div>
           <div class="field"><label for="additional-income">Additional annual income <span class="muted">(optional)</span></label><div class="input-prefix"><span>$</span><input id="additional-income" name="additionalIncome" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div></div>
         </div></div>
         <p id="salary-form-error" class="form-error" role="alert" hidden></p>
@@ -66,10 +75,98 @@
       </section>
     </section>
 
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A straightforward hourly pay calculator</h2><p>Your regular weekly pay is your hourly wage multiplied by regular hours. Overtime pay uses your hourly wage, overtime hours and multiplier. Those weekly amounts are annualised using the weeks you work each year.</p></section>
+    <section class="container guide-section">
+      <h2>How to Use the Hourly Wage to Salary Calculator</h2>
+      <p>Our hourly wage calculator helps you understand your annual income based on your hourly rate and work schedule. Here's how to use it:</p>
+      <ul>
+        <li><strong>Hourly wage</strong> – Enter your gross hourly pay (before tax and deductions).</li>
+        <li><strong>Hours worked per week</strong> – Enter your regular weekly working hours.</li>
+        <li><strong>Weeks worked per year</strong> – Enter the number of weeks you work annually (typically 52 for a full year, or fewer if you take unpaid leave).</li>
+        <li><strong>Overtime hours per week</strong> – If you work overtime, enter the average additional hours per week.</li>
+        <li><strong>Overtime multiplier</strong> – Enter the multiplier applied to overtime pay (for example, 1.5 for time-and-a-half).</li>
+        <li><strong>Additional annual income</strong> – Include any bonuses, allowances, or other annual income from this role.</li>
+      </ul>
+      <p>Once you've entered your details, click "Calculate salary" to see your gross income breakdown.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How Does the Salary Calculator Work?</h2>
+      <p>This hourly wage calculator estimates your gross income across multiple timeframes by multiplying your hourly rate by hours worked:</p>
+      <ul>
+        <li><strong>Weekly gross income</strong> – Your hourly wage multiplied by regular hours per week, plus any overtime earnings for that week.</li>
+        <li><strong>Fortnightly gross income</strong> – Your weekly gross income multiplied by two.</li>
+        <li><strong>Monthly gross income</strong> – Your weekly gross income multiplied by 4.33 (the average number of weeks per month).</li>
+        <li><strong>Annual gross income</strong> – Your total earnings for a full year, including regular pay, overtime pay and any additional income.</li>
+        <li><strong>Regular annual income</strong> – Earnings from your regular working hours across all weeks worked per year.</li>
+        <li><strong>Overtime income</strong> – Additional earnings from overtime hours at your overtime multiplier rate.</li>
+        <li><strong>Daily equivalent income</strong> – Your average daily earnings based on your total annual gross income divided by working days.</li>
+      </ul>
+      <p>All calculations are based on the hourly wage, hours, weeks worked, overtime details and additional income you provide. The calculator uses these inputs to estimate gross income before any tax, superannuation or other deductions.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Hourly Wage to Salary Example</h2>
+      <p>Here's a practical example of how the hourly to salary calculator works:</p>
+      <div class="guide-example">
+        <p><strong>Your details:</strong></p>
+        <dl>
+          <dt>Hourly wage</dt>
+          <dd>$30 per hour</dd>
+          <dt>Regular hours</dt>
+          <dd>38 hours per week</dd>
+          <dt>Weeks worked</dt>
+          <dd>52 weeks per year</dd>
+          <dt>Overtime hours</dt>
+          <dd>2 hours per week</dd>
+          <dt>Overtime multiplier</dt>
+          <dd>1.5× (time-and-a-half)</dd>
+          <dt>Additional annual income</dt>
+          <dd>$0</dd>
+        </dl>
+        <p><strong>Expected results:</strong></p>
+        <dl>
+          <dt>Weekly gross</dt>
+          <dd>$1,200</dd>
+          <dt>Fortnightly gross</dt>
+          <dd>$2,400</dd>
+          <dt>Monthly gross</dt>
+          <dd>$5,200</dd>
+          <dt>Annual gross</dt>
+          <dd>$62,400</dd>
+        </dl>
+        <p>In this example, your regular annual income would be $59,280 (38 hours × $30 × 52 weeks), and overtime would add $3,120 (2 hours × $30 × 1.5 × 52 weeks) for a total of $62,400 per year. Overtime contributes meaningfully to your annual gross amount.</p>
+      </div>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How Much Is My Hourly Wage Per Year?</h2>
+      <p>Calculating your annual income from an hourly wage depends on several factors. Your total yearly earnings are determined by:</p>
+      <ul>
+        <li><strong>Your hourly rate</strong> – The base amount you earn per hour.</li>
+        <li><strong>Hours worked per week</strong> – Your standard weekly schedule.</li>
+        <li><strong>Weeks worked per year</strong> – The number of weeks you're paid (accounting for unpaid leave or gaps).</li>
+        <li><strong>Overtime hours and multiplier</strong> – Any additional hours at a higher rate.</li>
+        <li><strong>Additional income</strong> – Bonuses, commissions, allowances or other payments.</li>
+      </ul>
+      <p>For a simple estimate: multiply your hourly wage by weekly hours, then by 52 weeks. For a more detailed calculation that includes overtime and variations in your schedule, use this hourly rate to annual salary calculator to see exactly how much you make a year.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Important Note</h2>
+      <p>This hourly wage calculator estimates your <strong>gross income</strong> – the amount before income tax, superannuation contributions, Medicare levy, insurance, or other deductions. Your actual take-home pay may differ significantly depending on:</p>
+      <ul>
+        <li>Income tax rates applicable to your income level and location.</li>
+        <li>Superannuation (or pension) contributions.</li>
+        <li>Tax file number (TFN) details and tax withholding.</li>
+        <li>Other personal deductions or circumstances.</li>
+      </ul>
+      <p>This calculator is for informational purposes only and does not provide financial or tax advice. For accurate information about your take-home pay and tax obligations, consult with a tax professional or your employer's payroll department.</p>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A straightforward hourly pay calculator</h2><p>Your regular weekly pay is your hourly wage multiplied by regular hours per week. Overtime earnings are calculated by multiplying your hourly wage by overtime hours by your overtime multiplier. Add both together, then multiply by weeks worked to get your annual gross income.</p></section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
 
   <script src="script.js"></script>
   <script>
@@ -116,7 +213,7 @@
           return '<li><span>' + scenario.label + ' (' + dollars(scenario.wage) + '/hour)</span><strong>' + dollars(scenarioAnnual) + ' per year</strong></li>';
         }).join('');
         error.hidden = true;
-        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(annual) + ' annual gross income</h2><div class="result-grid"><div><span>Weekly gross income</span><strong>' + dollars(weekly) + '</strong></div><div><span>Fortnightly gross income</span><strong>' + dollars(annual / 26) + '</strong></div><div><span>Monthly gross income</span><strong>' + dollars(annual / 12) + '</strong></div><div><span>Annual gross income</span><strong>' + dollars(annual) + '</strong></div><div><span>Annual regular pay</span><strong>' + dollars(annualRegular) + '</strong></div><div><span>Annual overtime pay</span><strong>' + dollars(annualOvertime) + '</strong></div><div><span>Additional annual income</span><strong>' + dollars(additional) + '</strong></div><div><span>Daily equivalent</span><strong>' + dollars(annual / 260) + '</strong></div></div><div class="result-highlight"><strong>Examples</strong><ul class="examples-list">' + scenarios + '</ul></div><p class="result-note">These are gross income estimates before tax and other deductions. Actual take-home pay may differ. Estimates are based on the information you enter and are for general informational purposes only.</p></div>';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(annual) + ' annual gross income</h2><div class="result-grid"><div><span>Weekly gross</span><strong>' + dollars(weekly) + '</strong></div><div><span>Fortnightly gross</span><strong>' + dollars(weekly * 2) + '</strong></div><div><span>Monthly gross</span><strong>' + dollars(weekly * 4.33) + '</strong></div><div><span>Daily equivalent</span><strong>' + dollars(annual / 260) + '</strong></div></div><div class="result-highlight"><h3>Income breakdown</h3><div class="result-grid"><div><span>Regular annual</span><strong>' + dollars(annualRegular) + '</strong></div><div><span>Overtime annual</span><strong>' + dollars(annualOvertime) + '</strong></div></div></div><div class="result-highlight"><h3>What if your wage changed?</h3><ul class="examples-list">' + scenarios + '</ul></div></div>';
       }
       form.addEventListener('submit', calculate);
     }());

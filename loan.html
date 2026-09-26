@@ -11,7 +11,7 @@
     *, *::before, *::after { box-sizing: border-box; }
     #loan-form input, #loan-form select { width: 100%; min-height: 48px; padding: 10px 12px; font-size: 16px; }
     #loan-form .input-prefix { display: flex; align-items: stretch; }
-    #loan-form .input-prefix span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line); border-right: 0; border-radius: 10px 0 0 10px; color: var(--muted); background: var(--soft); }
+    #loan-form .input-prefix span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line); border-right: 0; border-radius: 10px 0 0 10px; color: var(--muted); background: var(--bg-raised, #f9faf9); }
     #loan-form .input-prefix input { flex: 1; min-width: 0; border-radius: 0 10px 10px 0; }
     .loan-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .loan-results .result-grid strong { display: block; margin-top: .3rem; }
@@ -23,12 +23,20 @@
     .table-scroll { overflow-x: auto; margin-top: 1rem; }
     .loan-note { margin: .4rem 0 0; color: var(--muted); font-size: .92rem; }
     .loan-disclaimer { color: var(--muted); font-size: .95rem; }
+    .guide-section { max-width: 760px; margin: 3rem auto; }
+    .guide-section h2 { margin-top: 0; }
+    .guide-section ul { margin: 1rem 0; padding-left: 1.2rem; }
+    .guide-section li + li { margin-top: .45rem; }
+    .guide-example { background: var(--soft, #e8f4ef); border: 1px solid var(--line, #dce6e1); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
+    .guide-example p { margin-top: 0; }
+    .guide-example p + p { margin-top: 1rem; }
     @media (max-width: 600px) {
       #loan-form input, #loan-form select { min-height: 50px; }
       .loan-results .result-grid { grid-template-columns: 1fr; }
+      .guide-section { margin: 2rem auto; }
     }
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan Repayment Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/loan.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Loan Repayment Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"}}</script>
 </head>
 <body>
   <header class="site-header"><div class="container nav-wrap">
@@ -66,12 +74,66 @@
     <section class="container explainer">
       <p class="eyebrow">How it works</p>
       <h2>Understanding loan repayments</h2>
-      <p>A loan repayment calculator estimates your regular repayments, total amount repaid and total interest based on the loan amount, interest rate and loan term. This loan interest calculator uses a standard amortizing loan formula and converts the monthly result to your selected frequency.</p>
-      <p class="loan-disclaimer">This calculator provides estimates based on the information you enter. Actual loan repayments, interest charges, fees and loan terms may vary between lenders. This is for general informational purposes only and is not financial advice.</p>
+      <p>A loan repayment calculator estimates your regular repayments, total amount repaid and total interest based on the loan amount, interest rate and loan term. This loan interest calculator helps you see how borrowing costs change as the loan structure changes.</p>
+      <p class="loan-disclaimer">This calculator provides estimates based on the information you enter. Actual loan repayments, interest charges, fees and loan terms may vary between lenders. This is not financial advice and should not be used as a substitute for lender-specific terms or professional advice.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How to Use the Loan Repayment Calculator</h2>
+      <p>Use this loan repayment calculator to estimate the cost of a loan based on the information you enter. Here's how:</p>
+      <ul>
+        <li><strong>Loan amount</strong> – Enter the total amount borrowed.</li>
+        <li><strong>Annual interest rate</strong> – Enter the annual interest rate applied to the loan.</li>
+        <li><strong>Loan term</strong> – Enter how many years you expect to repay the loan.</li>
+        <li><strong>Repayment frequency</strong> – Choose whether you want to see weekly, fortnightly or monthly repayments.</li>
+      </ul>
+      <p>Once you submit the details, the calculator estimates the repayment amount, total repaid and total interest over the life of the loan.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How Does the Loan Repayment Calculator Work?</h2>
+      <p>This loan calculator uses your loan amount as the starting balance and applies the annual interest rate over the chosen loan term. It then estimates a regular repayment that pays off the loan over the selected period.</p>
+      <ul>
+        <li><strong>How the loan amount is used</strong> – The principal amount is the total borrowed, and this is the base figure the repayment schedule is built around.</li>
+        <li><strong>How the annual interest rate affects repayments</strong> – A higher interest rate increases the cost of borrowing and usually results in higher repayments.</li>
+        <li><strong>How the loan term affects the number of repayments</strong> – A longer loan term means more repayments, which can reduce the amount due per period but may increase the total interest paid.</li>
+        <li><strong>How weekly, fortnightly and monthly repayments are calculated</strong> – The calculator converts the loan schedule into a comparable repayment amount for the selected frequency.</li>
+        <li><strong>How total repayments and total interest are estimated</strong> – The estimate adds each repayment over the full term and subtracts the original loan amount to estimate the total interest.</li>
+        <li><strong>0% interest handling</strong> – When the annual interest rate is 0%, the calculator divides the loan amount by the number of repayments in the loan term, since there is no interest charged.</li>
+      </ul>
+      <p>These figures are estimates based on the assumptions entered and do not include lender-specific fees or rate changes.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Loan Repayment Example</h2>
+      <p>This loan repayment example shows how the loan calculator estimates repayments for a common scenario:</p>
+      <div class="guide-example">
+        <p><strong>Example loan details:</strong></p>
+        <p>Loan amount: $20,000<br>Annual interest rate: 7%<br>Loan term: 5 years<br>Repayment frequency: Monthly</p>
+        <p>The estimated monthly repayment is approximately $396.02. The calculator also estimates the total amount repaid and the total interest over the 5-year loan term, helping you understand the overall cost of the loan.</p>
+      </div>
+    </section>
+
+    <section class="container guide-section">
+      <h2>What Affects Loan Repayments?</h2>
+      <p>Loan repayments can vary depending on several factors:</p>
+      <ul>
+        <li><strong>Loan amount</strong> – A larger borrowed amount usually increases the repayment required.</li>
+        <li><strong>Interest rate</strong> – Higher rates usually mean higher repayments and more interest over time.</li>
+        <li><strong>Loan term</strong> – Longer terms can mean smaller repayments but more total interest paid.</li>
+        <li><strong>Repayment frequency</strong> – Weekly, fortnightly and monthly schedules can lead to different repayment amounts and the total amount paid over time.</li>
+      </ul>
+      <p>Use this loan payment calculator to compare scenarios and understand how these factors influence the estimated loan cost.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Important Note</h2>
+      <p>This loan repayment calculator provides estimates based on the information entered. Actual loan repayments can vary because of lender calculations, fees, rate changes, payment timing and other loan conditions.</p>
+      <p>For a final repayment schedule or exact terms, always check the lender's loan documentation and repayment terms. This calculator is designed to help you estimate how much are my loan repayments in a general scenario and understand typical repayment patterns.</p>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -133,7 +195,7 @@
           if (startBalance < 0 || !Number.isFinite(balance)) return showError('Please enter values that produce a valid estimate.');
         }
         error.hidden = true;
-        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(selected) + ' ' + frequencyNames[frequency].toLowerCase() + ' repayment</h2><div class="result-grid"><div><span>' + frequencyNames[frequency] + ' repayment</span><strong>' + dollars(selected) + '</strong></div><div><span>Monthly repayment</span><strong>' + dollars(monthly) + '</strong></div><div><span>Total amount repaid</span><strong>' + dollars(totalRepaid) + '</strong></div><div><span>Total interest paid</span><strong>' + dollars(totalInterest) + '</strong></div><div><span>Loan amount</span><strong>' + dollars(principal) + '</strong></div><div><span>Loan term</span><strong>' + years + ' ' + (years === 1 ? 'year' : 'years') + '</strong></div></div><div class="result-highlight"><h3>Year-by-year breakdown</h3><p class="loan-note">Estimated figures based on monthly amortization.</p><div class="table-scroll"><table><thead><tr><th>Year</th><th>Estimated remaining balance</th><th>Principal paid</th><th>Interest paid</th></tr></thead><tbody>' + rows.join('') + '</tbody></table></div></div></div>';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(selected) + ' ' + frequencyNames[frequency].toLowerCase() + ' repayment</h2><div class="result-grid"><div><span>Total repaid</span><strong>' + dollars(totalRepaid) + '</strong></div><div><span>Total interest</span><strong>' + dollars(totalInterest) + '</strong></div></div><div class="result-highlight"><h3>Loan schedule</h3><div class="table-scroll"><table><thead><tr><th>Year</th><th>Balance</th><th>Principal paid</th><th>Interest paid</th></tr></thead><tbody>' + rows.join('') + '</tbody></table></div></div></div>';
       }
       form.addEventListener('submit', calculate);
     }());

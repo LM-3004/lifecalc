@@ -20,7 +20,7 @@
     .fuel-disclaimer { color: var(--muted); font-size: .95rem; }
     @media (max-width: 600px) { .fuel-results .result-grid { grid-template-columns: 1fr; } }
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Fuel Cost Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/fuel.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Fuel Cost Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/fuel.html","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"}}</script>
 </head>
 <body>
   <header class="site-header"><div class="container nav-wrap">
@@ -31,25 +31,91 @@
     </nav>
   </div></header>
   <main>
-    <section class="page-intro container"><p class="eyebrow">Travel calculator</p><h1>Fuel Cost Calculator</h1><p>Estimate fuel cost per trip, fuel needed and the cost of driving using your distance, vehicle consumption and local fuel price.</p></section>
+    <section class="page-intro container"><p class="eyebrow">Travel calculator</p><h1>Fuel Cost Calculator</h1><p>Estimate fuel cost per trip, fuel needed and the cost of driving using your distance, consumption and fuel price.</p></section>
     <section class="container calculator-layout">
       <form id="fuel-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your trip details</h2><div class="form-grid">
-          <div class="field"><label for="distance">Distance</label><input id="distance" name="distance" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="100" required><span class="field-note">One-way distance for a trip</span></div>
+          <div class="field"><label for="distance">Distance</label><input id="distance" name="distance" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="100" required><span class="field-note">Tip: enter your one-way trip distance or total distance.</span></div>
           <div class="field"><label for="distance-unit">Distance unit</label><select id="distance-unit" name="distanceUnit"><option value="km">Kilometres</option><option value="miles">Miles</option></select></div>
-          <div class="field"><label for="consumption">Fuel consumption</label><input id="consumption" name="consumption" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="7" required></div>
+          <div class="field"><label for="consumption">Fuel consumption</label><input id="consumption" name="consumption" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="7" required><span class="field-note">Typical values are shown in litres per 100 km or MPG.</span></div>
           <div class="field"><label for="consumption-unit">Consumption unit</label><select id="consumption-unit" name="consumptionUnit"><option value="l100">L/100 km</option><option value="mpg">MPG</option></select></div>
-          <div class="field"><label for="fuel-price">Fuel price per litre</label><div class="input-prefix"><span>$</span><input id="fuel-price" name="fuelPrice" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="2.00" required></div></div>
-          <div class="field"><label for="trips">Number of trips</label><input id="trips" name="trips" type="number" min="1" step="1" inputmode="numeric" value="1"><span class="field-note">Optional; defaults to 1</span></div>
+          <div class="field"><label for="fuel-price">Fuel price per litre</label><div class="input-prefix"><span>$</span><input id="fuel-price" name="fuelPrice" type="number" min="0.000001" step="0.01" inputmode="decimal" placeholder="2.00" required></div></div>
+          <div class="field"><label for="trips">Number of trips</label><input id="trips" name="trips" type="number" min="1" step="1" inputmode="numeric" value="1"><span class="field-note">Optional: use this if you want to estimate multiple trips.</span></div>
         </div></div>
         <p id="fuel-form-error" class="form-error" role="alert" hidden></p>
         <button class="button button-primary" type="submit">Calculate fuel cost <span aria-hidden="true">→</span></button>
       </form>
-      <section id="fuel-results" class="results-card fuel-results" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">⛽</span><h2>Your estimate will appear here</h2><p>Enter your trip details to see your estimated fuel use and cost.</p></div></section>
+      <section id="fuel-results" class="results-card fuel-results" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">⛽</span><h2>Your estimate will appear here</h2><p>Enter your trip details to see an estimated fuel cost.</p></div></section>
     </section>
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>Understanding fuel costs</h2><p>A fuel cost calculator estimates how much fuel you may use and what a trip could cost based on distance, fuel consumption and fuel price. This petrol cost calculator converts miles and MPG when needed, then calculates your fuel cost per trip and total cost for multiple trips.</p><p class="fuel-disclaimer">This calculator provides estimates based on the information you enter. Actual fuel consumption and fuel prices can vary depending on driving conditions, vehicle condition, traffic and other factors. This is for general informational purposes only.</p></section>
+
+    <section class="container">
+      <h2>How to Use the Fuel Cost Calculator</h2>
+      <p>Use this fuel cost calculator to work out how much it will cost to drive a certain distance. To get started:</p>
+      <ul>
+        <li><strong>Distance</strong> – Enter the distance you plan to travel.</li>
+        <li><strong>Distance unit</strong> – Choose kilometres or miles.</li>
+        <li><strong>Fuel consumption</strong> – Enter your vehicle's fuel consumption, such as litres per 100 km or MPG.</li>
+        <li><strong>Fuel price per litre</strong> – Add the current price of fuel in your area.</li>
+        <li><strong>Number of trips</strong> – Optional: include multiple trips to estimate the total cost for repeated journeys.</li>
+      </ul>
+      <p>This fuel consumption calculator helps you estimate both the fuel needed and the total cost for your trip in a simple, practical way.</p>
+    </section>
+
+    <section class="container">
+      <h2>How Does the Fuel Cost Calculator Work?</h2>
+      <p>The calculation is based on the distance you're travelling, the vehicle's fuel use, and the current fuel price. In simple terms, it estimates:</p>
+      <ul>
+        <li>How much fuel your trip will use</li>
+        <li>How much the trip will cost at the fuel price you entered</li>
+        <li>How the total changes if you travel multiple times or compare different distances</li>
+      </ul>
+      <p>The fuel price calculator multiplies fuel needed by the price per litre, while the fuel consumption calculator converts your consumption figures into a comparable estimate. This makes it easy to compare a trip cost, a fuel cost per km estimate, or a larger route plan.</p>
+    </section>
+
+    <section class="container">
+      <h2>Fuel Cost Example</h2>
+      <p>Here's a simple example using common values:</p>
+      <ul>
+        <li>Distance: 100 km</li>
+        <li>Fuel consumption: 7 L/100 km</li>
+        <li>Fuel price: $2 per litre</li>
+      </ul>
+      <p>For this trip, the vehicle uses 7 litres and the fuel cost is $14. This is why a fuel cost calculator is useful when you want to quickly estimate how much a journey may cost before you drive.</p>
+    </section>
+
+    <section class="container">
+      <h2>What Affects Fuel Costs?</h2>
+      <p>Several things can influence your trip cost when using a petrol cost calculator or fuel cost per km estimate:</p>
+      <ul>
+        <li><strong>Distance travelled</strong> – Longer journeys use more fuel.</li>
+        <li><strong>Vehicle efficiency</strong> – A car with a higher fuel consumption rate will use more fuel for the same trip.</li>
+        <li><strong>Fuel price</strong> – A higher fuel price means the same trip can cost more.</li>
+        <li><strong>Driving conditions</strong> – Traffic, hills, speed, and load can affect real-world fuel use.</li>
+        <li><strong>Multiple trips</strong> – Repeating the trip will increase the total fuel used and the overall cost.</li>
+      </ul>
+      <p>Use this estimate as a planning guide. Real cost can vary depending on your driving habits and vehicle conditions.</p>
+    </section>
+
+    <section class="container">
+      <h2>What Does the Result Mean?</h2>
+      <p>The results from this fuel cost calculator show the estimated fuel used and the likely cost of the journey based on your inputs. This can help answer questions like:</p>
+      <ul>
+        <li>How much fuel will my trip use?</li>
+        <li>What is the fuel cost per km?</li>
+        <li>How much will it cost for one trip or several trips?</li>
+      </ul>
+      <p>These estimates are useful for budgeting and trip planning, but real-world fuel use can be different due to driving style, traffic, vehicle maintenance, and road conditions.</p>
+    </section>
+
+    <section class="container">
+      <h2>Important Note</h2>
+      <p>This fuel cost calculator provides estimates based on the values you enter. Actual fuel use and spending can vary depending on road conditions, traffic, load, vehicle maintenance, tyre pressure, and the price of fuel at the time you travel.</p>
+      <p>The calculator is intended as a practical planning tool. It does not guarantee exact trip cost or fuel use, and it should be used as a guide rather than a guaranteed forecast.</p>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>Understanding fuel costs</h2><p>A fuel cost calculator estimates how much fuel you may use and what a trip could cost based on distance, fuel consumption and fuel price. This helps you plan travel costs more confidently before you set out.</p><p class="fuel-disclaimer">This calculator gives an estimate based on the data you enter. Real fuel use can differ from the estimate because of traffic, route changes, weather, vehicle condition and other factors.</p></section>
   </main>
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms &amp; disclaimer</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -81,7 +147,7 @@
           var values = [kilometres, consumptionPer100, fuelPerTrip, costPerTrip, totalFuel, totalCost, costPerKilometre, costPerMile];
           if (values.some(function (value) { return !Number.isFinite(value) || value < 0; })) return showError('Please enter values that produce a valid estimate.');
           error.hidden = true;
-          results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + money.format(costPerTrip) + ' fuel cost per trip</h2><div class="result-section"><h3>Single-trip results</h3><div class="result-grid"><div><span>Fuel used per trip</span><strong>' + litres.format(fuelPerTrip) + ' litres</strong></div><div><span>Fuel cost per trip</span><strong>' + money.format(costPerTrip) + '</strong></div><div><span>Cost per kilometre</span><strong>' + money.format(costPerKilometre) + '</strong></div><div><span>Cost per mile</span><strong>' + money.format(costPerMile) + '</strong></div></div></div><div class="result-section result-highlight"><h3>' + (trips === 1 ? 'Trip total' : 'Total for ' + trips + ' trips') + '</h3><div class="result-grid"><div><span>Total fuel used</span><strong>' + litres.format(totalFuel) + ' litres</strong></div><div><span>Total fuel cost</span><strong>' + money.format(totalCost) + '</strong></div></div></div></div>';
+          results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + money.format(costPerTrip) + ' fuel cost per trip</h2><div class="result-section"><h3>Trip details</h3><div class="result-grid"><div><span>Distance</span><strong>' + litres.format(kilometres) + ' km</strong></div><div><span>Fuel used</span><strong>' + litres.format(fuelPerTrip) + ' L</strong></div><div><span>Fuel cost</span><strong>' + money.format(costPerTrip) + '</strong></div><div><span>Cost per km</span><strong>' + money.format(costPerKilometre) + '</strong></div></div></div><div class="result-section"><h3>Total for all trips</h3><div class="result-grid"><div><span>Trips</span><strong>' + trips + '</strong></div><div><span>Total fuel</span><strong>' + litres.format(totalFuel) + ' L</strong></div><div><span>Total cost</span><strong>' + money.format(totalCost) + '</strong></div><div><span>Cost per mile</span><strong>' + money.format(costPerMile) + '</strong></div></div></div></div>';
         });
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFuelCalculator); else initFuelCalculator();

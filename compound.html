@@ -13,7 +13,7 @@
     #compound-form input, #compound-form select { font-size: 16px; }
     #compound-form .input-prefix { display: flex; align-items: stretch; }
     #compound-form .input-prefix input { flex: 1; min-width: 0; border-radius: 0 10px 10px 0; }
-    #compound-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--soft, #e8f4ef); color: var(--muted, #60706a); }
+    #compound-form .input-prefix > span { display: inline-flex; align-items: center; padding: 0 .75rem; border: 1px solid var(--line, #dce6e1); border-right: 0; border-radius: 10px 0 0 10px; background: var(--bg-raised, #f9faf9); }
     .compound-results .result-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .compound-results .result-grid strong { display: block; margin-top: .3rem; }
     .compound-results .result-highlight { margin-top: 1rem; overflow-x: auto; }
@@ -26,11 +26,20 @@
     .comparison-list li:last-child { border-bottom: 0; }
     .comparison-list strong { text-align: right; }
     .compound-help { margin: .4rem 0 0; color: var(--muted, #60706a); font-size: .92rem; }
+    .guide-section { margin: 3rem 0; }
+    .guide-section h2 { margin-top: 0; }
+    .guide-example { background: var(--bg-raised, #f9faf9); border-radius: 10px; padding: 1.5rem; margin: 1rem 0; }
+    .guide-example dl { margin: 0; }
+    .guide-example dt { font-weight: 600; margin-top: 0.5rem; }
+    .guide-example dt:first-child { margin-top: 0; }
+    .guide-example dd { margin: 0.25rem 0 0; color: var(--muted, #60706a); }
     @media (max-width: 600px) {
       #compound-form input, #compound-form select { min-height: 50px; font-size: 16px; }
       .compound-results .result-grid { grid-template-columns: 1fr; }
       .comparison-list li { align-items: flex-start; flex-direction: column; gap: .25rem; }
       .comparison-list strong { text-align: left; }
+      .guide-section { margin: 2rem 0; }
+      .guide-example { padding: 1.25rem; }
     }
   </style>
 </head>
@@ -53,8 +62,8 @@
     <section class="container calculator-layout">
       <form id="compound-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your investment details</h2><div class="form-grid">
-          <div class="field"><label for="initial-investment">Initial investment</label><div class="input-prefix"><span>$</span><input id="initial-investment" type="number" min="0" step="0.01" inputmode="decimal" value="1000"></div></div>
-          <div class="field"><label for="regular-contribution">Regular contribution amount</label><div class="input-prefix"><span>$</span><input id="regular-contribution" type="number" min="0" step="0.01" inputmode="decimal" value="100"></div></div>
+          <div class="field"><label for="initial-investment">Initial investment</label><div class="input-prefix"><span>$</span><input id="initial-investment" type="number" min="0" step="0.01" inputmode="decimal" value="1000" required></div></div>
+          <div class="field"><label for="regular-contribution">Regular contribution amount</label><div class="input-prefix"><span>$</span><input id="regular-contribution" type="number" min="0" step="0.01" inputmode="decimal" value="100" required></div></div>
           <div class="field"><label for="contribution-frequency">Contribution frequency</label><select id="contribution-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></div>
           <div class="field"><label for="interest-rate">Annual interest rate (%)</label><input id="interest-rate" type="number" min="0" step="0.01" inputmode="decimal" value="7"></div>
           <div class="field"><label for="compounding-frequency">Compounding frequency</label><select id="compounding-frequency"><option value="daily">Daily</option><option value="monthly" selected>Monthly</option><option value="quarterly">Quarterly</option><option value="yearly">Yearly</option></select></div>
@@ -69,10 +78,92 @@
       </section>
     </section>
 
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>Understanding compound growth</h2><p>Compound interest means you earn interest on your initial money as well as on interest that has accumulated over time. The compound interest formula uses your annual rate and selected compounding frequency, while regular contributions are added consistently during each compounding period.</p></section>
+    <section class="container guide-section">
+      <h2>How to Use the Compound Interest Calculator</h2>
+      <p>Our compound interest calculator with contributions helps you see how your money could grow. Here's how to use it:</p>
+      <ul>
+        <li><strong>Initial investment</strong> – Enter the amount you're starting with.</li>
+        <li><strong>Regular contribution amount</strong> – Enter how much you plan to add at each interval.</li>
+        <li><strong>Contribution frequency</strong> – Choose how often you'll make contributions (weekly, fortnightly, monthly, or yearly).</li>
+        <li><strong>Annual interest rate</strong> – Enter the expected annual interest rate as a percentage.</li>
+        <li><strong>Compounding frequency</strong> – Select how often interest is added to your account (daily, monthly, quarterly, or yearly).</li>
+        <li><strong>Investment period</strong> – Enter how many years you plan to invest.</li>
+      </ul>
+      <p>Click "Calculate compound interest" to see your projected balance, total contributions, and interest earned.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>What Is Compound Interest?</h2>
+      <p>Compound interest is when you earn interest not only on your original investment, but also on the interest that has accumulated over time. This creates a "snowball effect" where your money grows faster and faster.</p>
+      <p>For example, if you invest $1,000 and earn 10% interest in the first year, you'd have $1,100. In the second year, you'd earn 10% on the full $1,100, not just the original $1,000. This means you earn $110 in year two, resulting in $1,210. The longer you invest, the more powerful this compounding effect becomes.</p>
+      <p>This is why compound interest is sometimes called "earning interest on your interest" – and it's one of the most powerful tools for building long-term wealth.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>How Does the Compound Interest Calculator Work?</h2>
+      <p>This investment growth calculator estimates your balance by considering several key factors:</p>
+      <ul>
+        <li><strong>Initial investment</strong> – The amount you start with today.</li>
+        <li><strong>Regular contributions</strong> – The additional money you add over time, which also earns interest.</li>
+        <li><strong>Contribution frequency</strong> – How often you add money (weekly, fortnightly, monthly, or yearly) affects how quickly your balance grows.</li>
+        <li><strong>Annual interest rate</strong> – The yearly percentage return on your investment. The calculator uses this to calculate growth.</li>
+        <li><strong>Compounding frequency</strong> – How often interest is calculated and added to your balance. More frequent compounding (daily vs. yearly) means slightly faster growth.</li>
+        <li><strong>Investment period</strong> – The longer you invest, the more time compound interest has to work.</li>
+      </ul>
+      <p>The calculator uses these inputs to project how your investment will grow year by year, showing the difference between your total contributions and the interest earned. The results table breaks down your estimated balance and interest at each year.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Compound Interest Example</h2>
+      <p>Here's a practical example of how the compound interest calculator works:</p>
+      <div class="guide-example">
+        <p><strong>Your investment scenario:</strong></p>
+        <dl>
+          <dt>Initial investment</dt>
+          <dd>$1,000</dd>
+          <dt>Regular contribution</dt>
+          <dd>$100 per month</dd>
+          <dt>Annual interest rate</dt>
+          <dd>7%</dd>
+          <dt>Compounding frequency</dt>
+          <dd>Monthly</dd>
+          <dt>Investment period</dt>
+          <dd>10 years</dd>
+        </dl>
+        <p>With these assumptions, the calculator estimates how your $1,000 initial investment and your regular $100 monthly contributions can grow over the 10-year period. The interest is calculated and added monthly, so you'll earn compound interest on your contributions as they accumulate. To see the specific projected balance and interest earned in your scenario, enter these values into the calculator above and click "Calculate compound interest."</p>
+      </div>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Why Does Compounding Frequency Matter?</h2>
+      <p>Compounding frequency is how often interest is added to your account. The main options are daily, monthly, quarterly, and yearly.</p>
+      <p>The more frequently interest compounds, the faster your money typically grows, because you earn interest on a larger balance sooner. For example:</p>
+      <ul>
+        <li><strong>Daily compounding</strong> – Interest is calculated and added every day, giving you more opportunities to earn interest on interest.</li>
+        <li><strong>Monthly compounding</strong> – Interest is added once per month, which is common for savings accounts.</li>
+        <li><strong>Quarterly compounding</strong> – Interest is added four times per year.</li>
+        <li><strong>Yearly compounding</strong> – Interest is added once per year, which provides the slowest growth.</li>
+      </ul>
+      <p>This compound interest calculator allows you to easily compare how different compounding frequencies affect your savings growth calculator projections. Try adjusting the compounding frequency to see how it influences your final balance.</p>
+    </section>
+
+    <section class="container guide-section">
+      <h2>Important Note</h2>
+      <p>This compound interest calculator provides estimates based on the information you enter. Your actual investment returns may vary and can be affected by several factors:</p>
+      <ul>
+        <li><strong>Market performance</strong> – Actual returns depend on market conditions and the specific investments you choose.</li>
+        <li><strong>Fees</strong> – Investment fees, advisory fees, or account maintenance charges can reduce your returns.</li>
+        <li><strong>Taxes</strong> – Investment income may be subject to income tax, capital gains tax, or other taxes depending on your location and circumstances.</li>
+        <li><strong>Inflation</strong> – The purchasing power of your money may decrease over time due to inflation.</li>
+        <li><strong>Interest rate changes</strong> – Interest rates can change, affecting how much your savings earn.</li>
+      </ul>
+      <p>This calculator is for informational and educational purposes only. It does not provide investment, financial, or tax advice. Your actual results may differ significantly from these estimates. For personalized guidance, consult with a qualified financial advisor.</p>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>Understanding compound growth</h2><p>Compound interest means you earn interest on your initial money as well as on interest that accumulates over time. This creates exponential growth, especially over long periods. By making regular contributions, you accelerate this growth even further.</p></section>
   </main>
 
-  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></nav></div></footer>
+  <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="script.js"></script>
   <script>
     (function () {
@@ -89,7 +180,7 @@
         results.innerHTML = '<div class="results-empty"><span class="result-icon">!</span><h2>Check your details</h2><p>' + message + '</p></div>';
       }
       function frequencyDetails(frequency) {
-        return { daily: { periods: 365, contributionPeriods: 365 / 12 }, monthly: { periods: 12, contributionPeriods: 1 }, quarterly: { periods: 4, contributionPeriods: 3 }, yearly: { periods: 1, contributionPeriods: 12 } }[frequency];
+        return { daily: { periods: 365, contributionPeriods: 365 / 12 }, monthly: { periods: 12, contributionPeriods: 1 }, quarterly: { periods: 4, contributionPeriods: 3 }, yearly: { periods: 1, contributionPeriods: 1 } }[frequency];
       }
       function monthlyContribution(amount, frequency) {
         return amount * ({ weekly: 52 / 12, fortnightly: 26 / 12, monthly: 1, yearly: 1 / 12 }[frequency]);
@@ -129,7 +220,7 @@
         var projection = project(initial, monthlyAmount, rate, compoundingFrequency, years);
         var checkValues = [monthlyAmount, projection.balance, projection.totalContributed, projection.interest];
         if (checkValues.some(function (number) { return !Number.isFinite(number); })) return showError('Please enter values that produce a valid estimate.');
-        var rows = projection.rows.map(function (row) { return '<tr><td>' + row.year + '</td><td>' + dollars(row.contributed) + '</td><td>' + dollars(row.balance) + '</td><td>' + dollars(row.interest) + '</td></tr>'; }).join('');
+        var rows = projection.rows.map(function (row) { return '<tr><td>' + row.year.toFixed(1) + '</td><td>' + dollars(row.contributed) + '</td><td>' + dollars(row.balance) + '</td><td>' + dollars(row.interest) + '</td></tr>'; }).join('');
         var comparison = [-2, -1, 0, 1, 2].map(function (change) {
           var scenarioRate = Math.max(0, rate + change / 100);
           var scenario = project(initial, monthlyAmount, scenarioRate, compoundingFrequency, years);
@@ -137,7 +228,7 @@
           return '<li><span>' + label + '</span><strong>' + dollars(scenario.balance) + '</strong></li>';
         }).join('');
         error.hidden = true;
-        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(projection.balance) + ' final balance</h2><div class="result-grid"><div><span>Final balance</span><strong>' + dollars(projection.balance) + '</strong></div><div><span>Total contributions</span><strong>' + dollars(projection.totalContributed) + '</strong></div><div><span>Total interest earned</span><strong>' + dollars(projection.interest) + '</strong></div><div><span>Initial investment</span><strong>' + dollars(initial) + '</strong></div><div><span>Growth from interest</span><strong>' + dollars(projection.interest) + '</strong></div></div><div class="result-highlight"><h3>Year-by-year projection</h3><table><thead><tr><th>Year</th><th>Total contributed</th><th>Estimated balance</th><th>Interest earned</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="result-highlight"><h3>Rate comparison</h3><p class="compound-help">Estimated final balance using the same investment details and different annual rates.</p><ul class="comparison-list">' + comparison + '</ul></div><p class="result-note">This calculator provides estimates based on the information you enter. Actual investment returns can vary and may be affected by fees, taxes, market performance and other factors. This is for general informational purposes only and is not financial advice.</p></div>';
+        results.innerHTML = '<div class="results-content"><p class="eyebrow">Your estimate</p><h2>' + dollars(projection.balance) + ' final balance</h2><div class="result-grid"><div><span>Total contributions</span><strong>' + dollars(projection.totalContributed) + '</strong></div><div><span>Interest earned</span><strong>' + dollars(projection.interest) + '</strong></div></div><div class="result-highlight"><h3>Projected balance by year</h3><table><thead><tr><th>Year</th><th>Total contributions</th><th>Balance</th><th>Interest earned</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="result-highlight"><h3>What if the interest rate changed?</h3><ul class="comparison-list">' + comparison + '</ul></div></div>';
       }
       form.addEventListener('submit', calculate);
     }());

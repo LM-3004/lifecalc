@@ -5,40 +5,40 @@
   <title>Can I Afford It? Calculator | LifeCalc</title>
   <meta name="description" content="Use this free Can I Afford It calculator to estimate whether a purchase fits your savings buffer, income and regular expenses.">
   <link rel="canonical" href="https://lm-3004.github.io/lifecalc/calculator.html"><link rel="stylesheet" href="styles.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Can I Afford It? Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://lm-3004.github.io/lifecalc/calculator.html","description":"Calculate whether you can afford a purchase based on your income, expenses, and savings goals"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Can I Afford It? Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"}}</script>
 </head>
 <body>
-  <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a><button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button><nav class="nav-menu" aria-label="Main navigation"><a href="index.html">Home</a><a href="calculator.html" aria-current="page">Calculator</a><a href="about.html">About</a></nav></div></header>
+  <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html" aria-label="LifeCalc home"><span class="brand-mark">L</span><span>LifeCalc</span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button><nav id="site-nav" class="site-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="calculator.html" aria-current="page">Can I Afford It?</a><a href="salary.html">Hourly to Salary</a><a href="about.html">About</a></nav></div></header>
   <main>
-    <section class="page-intro container"><p class="eyebrow">Purchase affordability calculator</p><h1>Can I Afford It?</h1><p>Enter a few numbers to estimate what a purchase would do to your savings and how long it might take to save for it if needed.</p></section>
+    <section class="page-intro container"><p class="eyebrow">Purchase affordability calculator</p><h1>Can I Afford It?</h1><p>Enter a few numbers to estimate what a purchase would do to your savings and how long it might take to save up.</p></section>
     <section class="container calculator-layout">
       <form id="affordability-form" class="calculator-card" novalidate>
         <div class="form-section"><h2>Your money</h2><div class="form-grid">
-          <div class="field"><label for="income">Income amount</label><div class="input-with-select"><input id="income" name="income" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required><select id="income-frequency" name="income-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="field"><label for="savings">Current savings</label><div class="input-prefix"><span>$</span><input id="savings" name="savings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div>
+          <div class="field"><label for="income">Income amount</label><div class="input-with-select"><input id="income" name="income" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0" required><select id="income-frequency" name="income-frequency"><option value="weekly" selected>per week</option><option value="fortnightly">per fortnight</option><option value="monthly">per month</option><option value="annual">per year</option></select></div></div>
+          <div class="field"><label for="savings">Current savings</label><div class="input-prefix"><span>$</span><input id="savings" name="savings" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0" required></div></div>
         </div></div>
         <div class="form-section"><h2>Regular expenses</h2><p class="form-help">Add each expense in the frequency you usually pay it. Leave unused fields at zero.</p><div class="expense-list">
-          <div class="expense-row"><label for="housing">Housing / rent</label><div class="input-with-select"><input id="housing" name="housing" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="housing-frequency" name="housing-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="food">Food</label><div class="input-with-select"><input id="food" name="food" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="food-frequency" name="food-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="transport">Transport</label><div class="input-with-select"><input id="transport" name="transport" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="transport-frequency" name="transport-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="bills">Bills / utilities</label><div class="input-with-select"><input id="bills" name="bills" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="bills-frequency" name="bills-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="entertainment">Entertainment / discretionary</label><div class="input-with-select"><input id="entertainment" name="entertainment" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="entertainment-frequency" name="entertainment-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="debt">Debt repayments</label><div class="input-with-select"><input id="debt" name="debt" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="debt-frequency" name="debt-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
-          <div class="expense-row"><label for="other">Other expenses</label><div class="input-with-select"><input id="other" name="other" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00"><select id="other-frequency" name="other-frequency"><option value="weekly">Weekly</option><option value="fortnightly">Fortnightly</option><option value="monthly">Monthly</option><option value="annual" selected>Annual</option></select></div></div>
+          <div class="expense-row"><label for="housing">Housing / rent</label><div class="input-with-select"><input id="housing" name="housing" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="housing-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="food">Food</label><div class="input-with-select"><input id="food" name="food" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="food-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="transport">Transport</label><div class="input-with-select"><input id="transport" name="transport" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="transport-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="bills">Bills / utilities</label><div class="input-with-select"><input id="bills" name="bills" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="bills-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="entertainment">Entertainment / discretionary</label><div class="input-with-select"><input id="entertainment" name="entertainment" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="entertainment-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="debt">Debt repayments</label><div class="input-with-select"><input id="debt" name="debt" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="debt-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
+          <div class="expense-row"><label for="other">Other expenses</label><div class="input-with-select"><input id="other" name="other" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><select name="other-frequency"><option value="weekly">per week</option><option value="fortnightly">per fortnight</option><option value="monthly" selected>per month</option><option value="annual">per year</option></select></div></div>
         </div></div>
-        <div class="form-section"><h2>Your purchase</h2><div class="form-grid"><div class="field"><label for="purchase">Purchase price</label><div class="input-prefix"><span>$</span><input id="purchase" name="purchase" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" required></div></div><div class="field"><label for="buffer">Minimum savings buffer</label><div class="input-prefix"><span>$</span><input id="buffer" name="buffer" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0.00" value="1000" required></div></div></div></div>
-        <p id="form-error" class="form-error" role="alert" hidden>Please enter valid amounts of zero or more. Values must be no larger than $1,000,000,000.</p><button class="button button-primary" type="submit">Calculate</button>
+        <div class="form-section"><h2>Your purchase</h2><div class="form-grid"><div class="field"><label for="purchase">Purchase price</label><div class="input-prefix"><span>$</span><input id="purchase" name="purchase" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0" required></div></div><div class="field"><label for="buffer">Minimum savings buffer</label><div class="input-prefix"><span>$</span><input id="buffer" name="buffer" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" value="1000" required></div></div></div></div>
+        <p id="form-error" class="form-error" role="alert" hidden>Please enter valid amounts of zero or more. Values must be no larger than $1,000,000,000.</p><button class="button button-primary" type="submit">Calculate affordability <span aria-hidden="true">→</span></button>
       </form>
-      <section id="results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form and click Calculate to see your results.</p></div></section>
+      <section id="results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form and click Calculate to see your estimate.</p></div></section>
     </section>
 
     <!-- New content sections for SEO and user guidance -->
     <section class="container content-section">
-      <h2>How to Use the Can I Afford It Calculator</h2>
-      <p>This affordability calculator helps you determine whether you can afford a purchase based on your current financial situation. Here's how to use it:</p>
+      <h2>How to Use the Budget Calculator</h2>
+      <p>This budget calculator and personal budget calculator helps you understand your finances and determine whether you can afford a purchase. Here's how to use it:</p>
       <ul>
-        <li><strong>Enter your income:</strong> Input how much you earn, selecting whether it's weekly, fortnightly, monthly, or annual. The calculator will convert this to a weekly amount for consistent calculations.</li>
-        <li><strong>List your regular expenses:</strong> Add your ongoing costs like housing, food, transport, bills, entertainment, debt repayments, and any other regular expenses. You can enter each in the frequency you usually pay it.</li>
+        <li><strong>Enter your income:</strong> Input how much you earn, selecting whether it's weekly, fortnightly, monthly, or annual. The calculator will convert this to a weekly amount for consistent comparison.</li>
+        <li><strong>List your regular expenses:</strong> Add your ongoing costs like housing, food, transport, bills, entertainment, debt repayments, and any other regular expenses. You can enter each in whatever frequency makes sense (weekly, fortnightly, monthly, or annual).</li>
         <li><strong>Add the purchase price:</strong> Enter the total cost of the item or experience you want to buy.</li>
         <li><strong>Set a savings buffer:</strong> Choose how much money you'd like to keep in savings after the purchase (the default is $1,000). This represents your financial safety net.</li>
         <li><strong>Review your results:</strong> The calculator will show whether you can afford the purchase while maintaining your chosen savings buffer, and if not, how long it might take to save for it.</li>
@@ -47,14 +47,29 @@
 
     <section class="container content-section">
       <h2>How Does the Calculator Work?</h2>
-      <p>Our purchase affordability calculator breaks down your finances into simple steps to help you understand your saving capacity:</p>
+      <p>Our purchase affordability calculator and monthly budget calculator breaks down your finances into simple steps to help you understand your saving capacity:</p>
       <ol>
-        <li><strong>Normalize your timeline:</strong> All income and expenses are converted to a weekly amount, regardless of how frequently you're paid or pay your bills. This makes everything comparable on the same scale.</li>
+        <li><strong>Normalize your timeline:</strong> All income and expenses are converted to a weekly amount, regardless of how frequently you're paid or pay your bills. This makes everything comparable and easy to understand.</li>
         <li><strong>Calculate weekly surplus:</strong> The calculator subtracts your total weekly expenses from your weekly income to find out how much money you have available to save each week.</li>
-        <li><strong>Determine your savings target:</strong> Your savings target is calculated by adding the purchase price to your desired minimum savings buffer. This is the total amount you need to have saved after the purchase.</li>
-        <li><strong>Compare current savings to target:</strong> The calculator compares your current savings with the target amount needed. If you have enough already, you can afford it. If not, it calculates how much more you need to save.</li>
+        <li><strong>Determine your savings target:</strong> Your savings target is calculated by adding the purchase price to your desired minimum savings buffer. This is the total amount you need to have saved before making the purchase.</li>
+        <li><strong>Compare current savings to target:</strong> The calculator compares your current savings with the target amount needed. If you have enough already, you can afford it. If not, it shows how much more you need.</li>
         <li><strong>Estimate the timeline:</strong> If additional savings are needed, the calculator divides the shortfall by your weekly available savings to estimate how many weeks it would take to reach your goal.</li>
       </ol>
+    </section>
+
+    <section class="container content-section">
+      <h2>What Should I Include in My Budget?</h2>
+      <p>To get the most accurate estimate from your monthly expenses calculator or personal budget planner, include all regular expenses you actually pay:</p>
+      <ul>
+        <li><strong>Housing / rent:</strong> Your monthly rent or mortgage payment.</li>
+        <li><strong>Food:</strong> Groceries and regular food expenses.</li>
+        <li><strong>Transport:</strong> Car payments, fuel, public transport, maintenance, or bike costs.</li>
+        <li><strong>Bills / utilities:</strong> Electricity, water, internet, phone, and other utility bills.</li>
+        <li><strong>Entertainment / discretionary:</strong> Dining out, hobbies, subscriptions, and entertainment spending.</li>
+        <li><strong>Debt repayments:</strong> Credit card payments, personal loans, student loans, or other debt obligations.</li>
+        <li><strong>Other expenses:</strong> Insurance, healthcare, childcare, personal care, or any other regular costs.</li>
+      </ul>
+      <p>Be as accurate as possible with your expenses. If you're unsure about a regular expense, review your bank statements from the last few months to find the average amount.</p>
     </section>
 
     <section class="container content-section">
@@ -65,13 +80,13 @@
         <li><strong>Savings buffer status:</strong> The calculator indicates whether you'd have at least your chosen minimum savings buffer remaining after the purchase.</li>
         <li><strong>Amount still needed:</strong> If you don't currently have enough to afford the purchase while maintaining your savings buffer, this shows how much more you'd need to save.</li>
         <li><strong>Estimated weeks to save:</strong> Based on your available weekly savings, the calculator estimates how long it would take to reach your goal at your current saving rate.</li>
-        <li><strong>Alternative saving scenarios:</strong> The results include estimates for what would happen if you increased your weekly savings by $25, $50, $100, or $200. This helps you see how different saving strategies could affect your timeline.</li>
+        <li><strong>Alternative saving scenarios:</strong> The results include estimates for what would happen if you increased your weekly savings by $25, $50, $100, or $200. This helps you see how small changes in your spending can speed up your savings timeline.</li>
       </ul>
     </section>
 
     <section class="container content-section">
-      <h2>Can I Afford This Purchase?</h2>
-      <p>The calculator provides an estimate based on the information you enter. It assumes your income and expenses remain consistent and doesn't account for unexpected costs or changes in your financial situation. Every person's circumstances are unique, and you should consider:</p>
+      <h2>Can I Afford This Purchase? How to Make a Budget</h2>
+      <p>The calculator provides an estimate based on the information you enter. It assumes your income and expenses remain consistent and doesn't account for unexpected costs or changes in your financial situation. When using this income and expenses calculator, also consider:</p>
       <ul>
         <li>Whether your income and expenses are likely to change in the near future</li>
         <li>Any upcoming expenses you may have forgotten to include</li>
@@ -82,20 +97,40 @@
     </section>
 
     <section class="container content-section">
-      <h2>Example</h2>
-      <p>Let's walk through a simple example to show how the calculator works:</p>
+      <h2>Budget Example</h2>
+      <p>Let's walk through a simple example to show how the budget calculator works:</p>
       <ul>
-        <li>Income: $1,000 per week</li>
-        <li>Weekly expenses: $0 (no regular expenses)</li>
-        <li>Current savings: $1,000</li>
-        <li>Purchase price: $1,000</li>
+        <li>Monthly income: $4,000</li>
+        <li>Housing: $1,500 per month</li>
+        <li>Food: $400 per month</li>
+        <li>Transport: $200 per month</li>
+        <li>Bills: $150 per month</li>
+        <li>Entertainment: $200 per month</li>
+        <li>Other expenses: $150 per month</li>
+        <li>Total monthly expenses: $2,600</li>
+        <li>Monthly surplus: $1,400</li>
+        <li>Current savings: $2,000</li>
+        <li>Purchase price: $1,500</li>
         <li>Minimum savings buffer: $1,000</li>
       </ul>
-      <p><strong>The calculation:</strong> Your savings target (what you need to have saved) is $2,000 ($1,000 purchase + $1,000 buffer). You currently have $1,000, so you need another $1,000. With $1,000 available to save per week, the calculator would estimate approximately <strong>1 week</strong> until the purchase is affordable.</p>
-      <p>If you increased your target buffer to $2,000 instead of $1,000, your total savings goal would be $3,000, requiring another $2,000 in savings—which would take about 2 weeks at your current saving rate.</p>
+      <p><strong>The calculation:</strong> Your savings target (what you need to have saved) is $2,500 ($1,500 purchase + $1,000 buffer). You currently have $2,000, so you need another $500. With a weekly surplus of about $323 ($1,400 monthly ÷ 4.33 weeks), you could reach your savings goal in approximately 1-2 weeks.</p>
+      <p>In this example, you could afford the purchase fairly quickly while still maintaining a $1,000 financial safety net.</p>
     </section>
 
-    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>The calculator converts your income and each expense to a weekly amount, then calculates what you have left over to save. It compares this to how much you need for the purchase plus your savings goal, and estimates how long it would take to reach that target. This helps you understand the real timeline for making a purchase work with your current finances.</p></section>
+    <section class="container content-section">
+      <h2>Important Note</h2>
+      <p>This budget calculator and personal budget calculator provides estimates based on the information you enter. The results are intended to help you plan and understand your financial situation, but actual outcomes may differ. Keep in mind:</p>
+      <ul>
+        <li>Income and expenses can change unexpectedly.</li>
+        <li>This calculator assumes consistent income and spending patterns.</li>
+        <li>It does not account for tax, emergency expenses, or irregular costs.</li>
+        <li>The estimates are for planning purposes and should not be considered financial advice.</li>
+        <li>Your personal financial situation may have factors this calculator doesn't consider.</li>
+      </ul>
+      <p>Use this calculator as a helpful starting point for understanding your finances, but consult with a financial advisor for personalized advice about your specific situation.</p>
+    </section>
+
+    <section class="container explainer"><p class="eyebrow">How it works</p><h2>A simple estimate, built from your numbers</h2><p>The calculator converts your income and each expense to a weekly amount. It then subtracts your weekly expenses from your weekly income to calculate how much you can save each week. Based on your current savings, purchase price, and savings buffer, it estimates whether you can afford the purchase now or how long you'd need to save.</p></section>
   </main>
   <footer class="site-footer"><div class="container footer-wrap"><p>© 2026 LifeCalc</p><nav aria-label="Footer navigation"><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="contact.html">Contact</a></nav></div></footer>
   <script src="calculator.js"></script>

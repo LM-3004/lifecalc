@@ -43,6 +43,10 @@
     .discount-info p { color: var(--muted, #60706a); line-height: 1.65; }
     @media (max-width: 760px) { .discount-layout { grid-template-columns: 1fr; } }
     @media (max-width: 560px) { .discount-grid, .discount-result-grid { grid-template-columns: 1fr; } .discount-field.full { grid-column: auto; } .discount-card, .discount-results { padding: 1.25rem; } }
+    .related-list { display: grid; gap: .75rem; margin-top: 1rem; }
+    .related-item { display: block; padding: .9rem 1rem; border: 1px solid var(--line, #dce6e1); border-radius: 12px; background: var(--card, #fff); color: var(--ink, #17251f); text-decoration: none; }
+    .related-item strong { display: block; margin-bottom: .25rem; }
+    .related-item span { color: var(--muted, #60706a); line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -117,23 +121,14 @@
       <h2>About this discount calculator</h2>
       <p>A discount calculator shows how much you can save during a sale and what the final price will be after applying a percentage discount. Enter the original price, discount, quantity and any applicable tax to estimate your total cost.</p>
 
-      <h3>How to Use the Discount Calculator</h3>
-      <p>Enter the original price, discount percentage, and quantity to get an estimate with this discount calculator. It is a helpful percentage discount calculator for sale shopping, budgeting, and comparing offers.</p>
-
-      <h3>How Does the Discount Calculator Work?</h3>
-      <p>This sale price calculator works by subtracting the discount amount from the original price. The discount amount is calculated as a percentage of the original price, so a discount percentage calculator can quickly show how much you save and what the price after discount will be.</p>
-
-      <h3>Discount Example</h3>
-      <p>For example, if the original price is $100 and the discount is 20%, the discount amount is $20. That leaves a price after discount of $80 before tax.</p>
-
-      <h3>How to Calculate a Discount</h3>
-      <p>To work out how to calculate a discount, multiply the original price by the discount percentage and divide by 100. Then subtract that value from the original price to find the sale price.</p>
-
-      <h3>What Does the Result Mean?</h3>
-      <p>The result shows the discount amount, the price after discount, and any tax or total savings based on your entry. If you are using this as a budget tool, the final number gives a clear estimate of what you should expect to pay.</p>
-
-      <h3>Important Note</h3>
-      <p>Keep in mind that this discount calculator is for estimates only. Prices, taxes, store promotions, and fees can vary, so use it as a quick guide when comparing a percentage discount calculator result with the final checkout total.</p>
+      <h3>Related Calculators</h3>
+      <div class="related-list" aria-label="Related calculators">
+        <a class="related-item" href="savings.html"><strong>Savings Goal</strong><span>Use this when you want to plan how much to save and how long it may take to reach a financial target.</span></a>
+        <a class="related-item" href="budget.html"><strong>Budget</strong><span>Helpful for comparing income, expenses, and remaining cash after everyday spending.</span></a>
+        <a class="related-item" href="car.html"><strong>Car Affordability</strong><span>Useful for estimating whether a vehicle purchase fits your income, costs, and monthly budget.</span></a>
+        <a class="related-item" href="rent.html"><strong>Rent Affordability</strong><span>Useful for checking whether rent and living costs are realistic based on your income.</span></a>
+        <a class="related-item" href="loan.html"><strong>Loan Repayment</strong><span>Helpful when you want to understand regular repayments, total interest, and the cost of borrowing.</span></a>
+      </div>
     </section>
   </main>
 

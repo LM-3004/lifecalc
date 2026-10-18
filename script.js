@@ -69,7 +69,7 @@ function renderResults(data) {
   results.innerHTML = `<div class="result-status ${statusClass}"><span class="result-icon">${data.canAfford ? '✓' : '!'}</span><div><p class="eyebrow">Your estimate</p><h2>${statusTitle}</h2><p>${gapText}</p></div></div>
     <div class="metric-grid"><div class="metric"><span>Current savings</span><strong>${money(data.savings)}</strong></div><div class="metric"><span>After purchase</span><strong>${money(data.afterPurchase)}</strong></div><div class="metric"><span>Weekly surplus</span><strong>${money(data.normalWeeklySurplus)}</strong></div></div>
     <div class="timeline"><h3>Saving timeline</h3><p>${baseTimeline}</p><p class="muted">${data.amountStillNeeded > 0 ? `Your target is ${money(data.targetSavings)} in total savings.` : 'No additional saving is needed to meet your target.'}</p></div>
-    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Normal weekly surplus: <strong>${money(data.normalWeeklySurplus)}</strong></li><li>Projected weekly saving with your additional saving: <strong>${money(data.projectedWeeklySaving)}</strong></li></ul></div>
+    <div class="breakdown"><h3>How this was calculated</h3><ul><li>Weekly income: <strong>${money(data.weeklyIncome)}</strong></li><li>Weekly expenses: <strong>${money(data.weeklyExpenses)}</strong></li><li>Normal weekly surplus: <strong>${money(data.normalWeeklySurplus)}</strong></li></ul></div>
     <div class="scenarios"><h3>What if you save more each week?</h3><p class="muted">These are separate scenarios — choose the amount you could realistically save. Each option adds only that amount to your normal weekly surplus.</p>${scenarioRows}</div>
     <p class="result-note">This is an estimate, not financial advice. It only reflects the information entered and does not guarantee affordability.</p>`;
 }
@@ -77,10 +77,8 @@ function renderResults(data) {
 function setupCalculator() {
   const form = document.getElementById('affordability-form');
   if (!form) return;
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const error = document.getElementById('form-error');
-    const names = ['income', 'savings', 'housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other', 'purchase', 'buffer', 'extra'];
+  const readPlan = () => {
+    const names = ['income', 'savings', 'housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other', 'purchase', 'buffer'];
     const values = Object.fromEntries(names.map(name => [name, readAmount(form, name)]));
     const weeklyExpenses = ['housing', 'food', 'transport', 'bills', 'entertainment', 'debt', 'other']
       .reduce((sum, name) => sum + (weeklyAmount(form, name, `${name}Frequency`) ?? NaN), 0);
@@ -90,17 +88,15 @@ function setupCalculator() {
     const invalid = Object.values(values).some(value => value === null)
       || !Number.isFinite(weeklyExpenses)
       || !Number.isFinite(weeklyIncome);
-    if (invalid) { error.hidden = false; return; }
-    error.hidden = true;
+    if (invalid) return null;
 
     const normalWeeklySurplus = weeklyIncome - weeklyExpenses;
-    const projectedWeeklySaving = normalWeeklySurplus + values.extra;
     const targetSavings = values.purchase + values.buffer;
     const amountStillNeeded = Math.max(0, targetSavings - values.savings);
     const afterPurchase = values.savings - values.purchase;
-    const estimatedWeeks = weeksFor(amountStillNeeded, projectedWeeklySaving);
+    const estimatedWeeks = weeksFor(amountStillNeeded, normalWeeklySurplus);
 
-    renderResults({
+    return {
       savings: values.savings,
       purchase: values.purchase,
       buffer: values.buffer,
@@ -110,10 +106,46 @@ function setupCalculator() {
       weeklyIncome,
       weeklyExpenses,
       normalWeeklySurplus,
-      projectedWeeklySaving,
       estimatedWeeks,
       canAfford: afterPurchase >= values.buffer
-    });
+    };
+  };
+
+  const slider = document.getElementById('timeframe');
+  const updateTimeframe = () => {
+    if (!slider) return;
+    const weeks = Number(slider.value);
+    const label = `${weeks} week${weeks === 1 ? '' : 's'}`;
+    const output = document.getElementById('timeframe-value');
+    const result = document.getElementById('timeframe-result');
+    output.textContent = label;
+    slider.setAttribute('aria-valuetext', label);
+    const plan = readPlan();
+    if (!plan) { result.textContent = 'Enter valid amounts above to see what this timeframe needs.'; return; }
+    const required = plan.amountStillNeeded / weeks;
+    const shortfall = required - plan.normalWeeklySurplus;
+    const needText = plan.amountStillNeeded > 0
+      ? `To reach your target in ${label} you need to save ${money(required)} per week.`
+      : 'Your current savings already cover the purchase and buffer.';
+    const verdict = shortfall > 0.005
+      ? `Not achievable yet: you are short by ${money(shortfall)} per week.`
+      : 'Achievable with your current weekly surplus.';
+    result.textContent = `${needText} Your weekly surplus is ${money(plan.normalWeeklySurplus)}. ${verdict}`;
+  };
+  if (slider) {
+    slider.addEventListener('input', updateTimeframe);
+    form.addEventListener('input', updateTimeframe);
+    form.addEventListener('change', updateTimeframe);
+    updateTimeframe();
+  }
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const error = document.getElementById('form-error');
+    const plan = readPlan();
+    if (!plan) { error.hidden = false; return; }
+    error.hidden = true;
+    renderResults(plan);
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }

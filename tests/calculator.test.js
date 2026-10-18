@@ -1,0 +1,52 @@
+// Run: npm i playwright (outside repo) then `node tests/calculator.test.js`
+const http = require('http'), fs = require('fs'), path = require('path');
+const { chromium } = require('playwright');
+const root = path.join(__dirname, '..');
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+const server = http.createServer((req, res) => {
+  const f = path.join(root, req.url.split('?')[0].replace(/^\/lifecalc/, '') || '/index.html');
+  fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain' }); res.end(d); });
+});
+let failed = 0;
+const check = (name, ok, extra = '') => { console.log(`${ok ? 'PASS' : 'FAIL'} ${name} ${extra}`); if (!ok) failed++; };
+(async () => {
+  await new Promise(r => server.listen(0, r));
+  const base = `http://localhost:${server.address().port}`;
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  const errors = [], statuses = {};
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', e => errors.push(String(e)));
+  page.on('response', r => { statuses[new URL(r.url()).pathname] = r.status(); });
+  await page.goto(`${base}/calculator.html`);
+  check('script.js 200', statuses['/script.js'] === 200);
+  await page.evaluate(() => { window.__marker = 1; });
+  const fill = async (id, v, freq) => { await page.fill('#' + id, String(v)); if (freq) await page.selectOption('#' + id + 'Frequency', freq); };
+  await fill('income', 200, 'week'); await fill('savings', 300); await fill('purchase', 1500); await fill('buffer', 200);
+  const setWeeks = async w => { await page.$eval('#timeframe', (el, w) => { el.value = w; el.dispatchEvent(new Event('input', { bubbles: true })); }, w); return page.textContent('#timeframe-result'); };
+  let t = await setWeeks(8);
+  check('8 weeks', t.includes('$175.00 per week') && t.includes('Achievable'), t);
+  check('8 weeks label', (await page.textContent('#timeframe-value')) === '8 weeks' && (await page.getAttribute('#timeframe', 'aria-valuetext')) === '8 weeks');
+  t = await setWeeks(4);
+  check('4 weeks', t.includes('$350.00 per week') && t.includes('short by $150.00 per week'), t);
+  t = await setWeeks(52);
+  check('52 weeks', t.includes('$26.92 per week') && t.includes('Achievable'), t);
+  await page.click('button[type=submit]');
+  const res = await page.textContent('#results');
+  check('Calculate renders without reload', (await page.evaluate(() => window.__marker)) === 1 && res.includes('Your estimate') && res.includes('$200.00'), '');
+  check('amount still needed in results', res.includes('$1,400.00'));
+  const conv = async (freq, amt) => {
+    await fill('income', amt, freq); await fill('housing', 0, 'week');
+    await page.click('button[type=submit]');
+    return (await page.textContent('#results')).match(/Weekly income: (\$[\d,.]+)/)[1];
+  };
+  check('weekly', (await conv('week', 100)) === '$100.00');
+  check('fortnightly', (await conv('fortnight', 100)) === '$50.00');
+  check('monthly', (await conv('month', 520)) === '$120.00');
+  check('annual', (await conv('year', 5200)) === '$100.00');
+  await page.fill('#income', '-5'); await page.click('button[type=submit]');
+  check('invalid shows error', await page.isVisible('#form-error'));
+  check('no console errors', errors.length === 0, errors.join('|'));
+  await browser.close(); server.close();
+  process.exit(failed ? 1 : 0);
+})();

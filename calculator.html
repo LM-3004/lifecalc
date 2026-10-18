@@ -58,6 +58,22 @@
         width:100%;
       }
     }
+    /* Target timeframe slider (calculator page only) */
+    #affordability-form .timeframe-value{font-size:1.5rem;font-weight:800;color:var(--brand-dark);margin:.2rem 0 .8rem}
+    #affordability-form .timeframe-slider{position:relative;margin-inline:.5rem}
+    #affordability-form input[type="range"]{-webkit-appearance:none;appearance:none;height:44px;padding:0;border:0;background:transparent;cursor:pointer;touch-action:manipulation}
+    #affordability-form input[type="range"]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:var(--soft);border:1px solid var(--line)}
+    #affordability-form input[type="range"]::-moz-range-track{height:8px;border-radius:8px;background:var(--soft);border:1px solid var(--line)}
+    #affordability-form input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-11px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 1px 5px #17382b55}
+    #affordability-form input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 1px 5px #17382b55}
+    #affordability-form .timeframe-labels{position:relative;height:1.6rem;margin-top:-.4rem;font-size:.75rem;color:var(--muted)}
+    #affordability-form .timeframe-labels span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+    #affordability-form .timeframe-results{margin-top:1.2rem;background:#f7faf8;border:1px solid var(--line);border-radius:12px;padding:1rem}
+    #affordability-form .timeframe-results h3{margin:0 0 .6rem}
+    #affordability-form .timeframe-results .scenario-row:first-of-type{border-top:0}
+    #affordability-form .timeframe-status{margin:.8rem 0 0;padding:.7rem;border-radius:8px;font-weight:650}
+    #affordability-form .timeframe-status.result-good{background:var(--soft);color:var(--brand-dark)}
+    #affordability-form .timeframe-status.result-caution{background:var(--warn);color:var(--warn-ink)}
   </style>
 </head>
 <body>
@@ -80,6 +96,8 @@
           <div class="expense-row"><label for="other">Other expenses</label><div class="input-with-select"><input id="other" name="other" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"><label class="sr-only" for="otherFrequency">Other frequency</label><select id="otherFrequency" name="otherFrequency"><option value="week">Per week</option><option value="fortnight">Per fortnight</option><option value="month" selected>Per month</option><option value="year">Per year</option></select></div></div>
         </div></div>
         <div class="form-section"><h2>Your purchase</h2><div class="form-grid"><div class="field"><label for="purchase">Purchase price</label><div class="input-prefix"><span>$</span><input id="purchase" name="purchase" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="0"></div></div><div class="field"><label for="buffer">Minimum savings buffer</label><div class="input-prefix"><span>$</span><input id="buffer" name="buffer" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="1000" value="1000"></div></div></div></div>
+        <div class="form-section" id="timeframe-section"><h2 id="timeframe-heading">When do you want to buy it?</h2><p class="form-help">Drag the slider to choose a target timeframe from 1 week to 1 year.</p><p class="timeframe-value" id="timeframe-value" aria-hidden="true">8 weeks</p><div class="timeframe-slider"><input id="timeframe" name="timeframe" type="range" min="1" max="52" step="1" value="8" aria-labelledby="timeframe-heading" aria-label="Target timeframe in weeks" aria-valuetext="8 weeks"><div class="timeframe-labels" aria-hidden="true"><span style="left:calc((1-1)/51*(100% - 28px) + 14px)">1 week</span><span style="left:calc((13-1)/51*(100% - 28px) + 14px)">3 months</span><span style="left:calc((26-1)/51*(100% - 28px) + 14px)">6 months</span><span style="left:calc((39-1)/51*(100% - 28px) + 14px)">9 months</span><span style="left:calc((52-1)/51*(100% - 28px) + 14px)">1 year</span></div></div>
+        <div class="timeframe-results" id="timeframe-results" aria-live="polite"></div></div>
         <p id="form-error" class="form-error" role="alert" hidden>Please enter valid amounts of zero or more. Values must be no larger than $1,000,000,000.</p><button class="button button-primary" type="submit">Calculate</button>
       </form>
       <section id="results" class="results-card" aria-live="polite" aria-atomic="true"><div class="results-empty"><span class="result-icon">✦</span><h2>Your estimate will appear here</h2><p>Complete the form and choose <strong>Calculate</strong> to see whether you can afford the purchase while keeping your buffer.</p></div></section>
